@@ -1,0 +1,3516 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Козырь в рукаве</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Neucha&family=PT+Sans+Narrow:wght@700&family=PT+Sans:wght@400;700&family=Yeseva+One&display=swap">
+<style>
+[hidden] { display: none !important; }
+:root {
+  color-scheme: dark;
+  --felt: #1d4739;
+  --felt-deep: #0c241c;
+  --lamp: rgba(255, 208, 128, 0.17);
+  --check: rgba(255, 255, 255, 0.034);
+  --paper: #f4ecda;
+  --paper-2: #e8dcc1;
+  --paper-edge: #cbbd9c;
+  --ink: #1e1b17;
+  --ink-red: #b3261e;
+  --brass: #d5a24a;
+  --brass-hi: #f3d080;
+  --brass-lo: #7d5a22;
+  --walnut: #1d130d;
+  --walnut-2: #2a1c13;
+  --walnut-3: #3a281b;
+  --cream: #f1e4c8;
+  --cream-dim: #b9a986;
+  --heart: #e9554a;
+  --good: #9ad992;
+  --bad: #ff9584;
+  --notebook: #fbf8f0;
+  --grid: #cfdcec;
+  --margin-line: #e3928a;
+  --pencil: #2a3970;
+  --back: #8e2323;
+  --q1: #d9d0b9;
+  --q2: #7cc3e6;
+  --q3: #c7a1f3;
+  --q4: #f2bd4f;
+  --font-display: 'Yeseva One', Georgia, 'Times New Roman', serif;
+  --font-ui: 'PT Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-narrow: 'PT Sans Narrow', 'Arial Narrow', 'PT Sans', sans-serif;
+  --font-hand: 'Neucha', 'Segoe Print', 'Comic Sans MS', cursive;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--felt-deep);
+  color: var(--cream);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button { font: inherit; color: inherit; }
+
+#app {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-inline: 16px;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 40%, var(--lamp), transparent 72%),
+    radial-gradient(ellipse 125% 95% at 50% 45%, transparent 52%, rgba(0, 0, 0, 0.6)),
+    repeating-linear-gradient(0deg, var(--check) 0 10px, transparent 10px 20px),
+    repeating-linear-gradient(90deg, var(--check) 0 10px, transparent 10px 20px),
+    var(--felt);
+}
+
+/* ---------- верхняя панель забега ---------- */
+#topbar {
+  position: relative;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px 16px;
+  padding-block: 8px 4px;
+  flex-wrap: wrap;
+}
+.hud-group { display: flex; align-items: center; gap: 12px; }
+.hearts { font-size: 20px; letter-spacing: 1px; color: var(--heart); line-height: 1; }
+.hearts .lost { color: rgba(233, 85, 74, 0.28); }
+.coins {
+  font-family: var(--font-hand);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--brass-hi);
+  font-variant-numeric: tabular-nums;
+}
+.coins small { font-size: 18px; margin-left: 3px; }
+.coin {
+  display: inline-block;
+  width: 0.72em;
+  height: 0.72em;
+  margin-left: 0.14em;
+  border-radius: 50%;
+  vertical-align: -0.06em;
+  background: radial-gradient(circle at 35% 30%, #fff1c2, var(--brass-hi) 30%, var(--brass) 62%, var(--brass-lo));
+  box-shadow: inset 0 0 0 0.07em rgba(125, 90, 34, 0.75), 0 0.04em 0.08em rgba(0, 0, 0, 0.35);
+}
+.progress {
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+.progress b { color: var(--cream); }
+.trays { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
+.tray { display: flex; gap: 6px; align-items: center; }
+.tray-label {
+  font-family: var(--font-narrow);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-right: 2px;
+}
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(241, 228, 200, 0.25);
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+}
+.icon-btn:hover { background: rgba(0, 0, 0, 0.4); }
+
+.token {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  background: radial-gradient(circle at 34% 28%, var(--brass-hi), var(--brass) 46%, var(--brass-lo));
+  box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.35), 0 2px 5px rgba(0, 0, 0, 0.45), 0 0 0 2px var(--rq, transparent);
+}
+.token.q2 { --rq: var(--q2); }
+.token.q3 { --rq: var(--q3); }
+.token.q4 { --rq: var(--q4); }
+.token .dot {
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 2px var(--walnut);
+}
+.token.spent { filter: grayscale(0.8) brightness(0.7); }
+.token.fire { animation: wiggle 0.6s var(--ease); }
+.slot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(241, 228, 200, 0.22);
+}
+.trick {
+  position: relative;
+  width: 32px;
+  height: 44px;
+  border-radius: 5px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: linear-gradient(160deg, #fffaf0, var(--paper) 60%, var(--paper-2));
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45), inset 0 0 0 2px #fff, inset 0 0 0 3px var(--brass);
+}
+.trick.armed { box-shadow: 0 0 0 3px var(--brass-hi), 0 2px 8px rgba(0, 0, 0, 0.5); transform: translateY(-3px); }
+.trick-slot {
+  width: 32px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1.5px dashed rgba(241, 228, 200, 0.22);
+}
+.token:focus-visible, .trick:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .card:focus-visible {
+  outline: 3px solid var(--q2);
+  outline-offset: 3px;
+}
+
+/* ---------- сцены ---------- */
+#stage { position: relative; flex: 1; min-height: 0; }
+.screen { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding-block: 8px 24px; }
+#screen-game { overflow: hidden; padding: 0; }
+.wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+
+/* ---------- кнопки ---------- */
+.btn {
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--brass-lo);
+  background: linear-gradient(var(--brass-hi), var(--brass) 55%, #b9832f);
+  color: #2a1a08;
+  box-shadow: 0 3px 0 var(--brass-lo), 0 7px 16px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.12s, box-shadow 0.12s, filter 0.12s;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--brass-lo), 0 3px 8px rgba(0, 0, 0, 0.3); }
+.btn[disabled] { filter: grayscale(0.7) brightness(0.7); cursor: not-allowed; }
+.btn.ghost {
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--cream);
+  border-color: rgba(241, 228, 200, 0.3);
+  box-shadow: none;
+}
+.btn.small { font-size: 13px; padding: 7px 12px; }
+.btn.big { font-size: 19px; padding: 14px 28px; }
+.btn.pulse { animation: btnpulse 1.4s ease-in-out infinite; }
+
+/* ---------- карты ---------- */
+#board { position: absolute; inset: 0; --cw: 80px; --ch: 112px; }
+.card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--cw);
+  height: var(--ch);
+  transition: transform 0.42s var(--ease);
+  will-change: transform;
+  perspective: 900px;
+}
+.card .cin {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--cw) * 0.085);
+  transform-style: preserve-3d;
+  transition: transform 0.38s var(--ease);
+}
+.card.down .cin { transform: rotateY(180deg); }
+.card .front, .card .back {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card .front {
+  overflow: hidden;
+  color: var(--ink);
+  background: linear-gradient(160deg, #fdf8ea, var(--paper) 58%, var(--paper-2));
+  border: 1px solid var(--paper-edge);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 3px 9px rgba(0, 0, 0, 0.38);
+}
+.card.red .front { color: var(--ink-red); }
+.card .back {
+  transform: rotateY(180deg);
+  border: calc(var(--cw) * 0.055) solid #efe5cf;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 228, 170, 0.22) 0 14%, transparent 15%),
+    repeating-linear-gradient(45deg, rgba(255, 215, 140, 0.24) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-45deg, rgba(255, 215, 140, 0.24) 0 1px, transparent 1px 7px),
+    var(--back);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 3px 9px rgba(0, 0, 0, 0.38);
+}
+.corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  font-size: calc(var(--cw) * 0.23);
+  line-height: 0.92;
+}
+.corner i { font-style: normal; font-size: 0.82em; }
+.corner.tl { left: 5%; top: 4%; }
+.corner.br { right: 5%; bottom: 4%; transform: rotate(180deg); }
+.pips { position: absolute; inset: 13% 20%; }
+.pip {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: calc(var(--cw) * 0.2);
+  line-height: 1;
+}
+.pip.flip { transform: translate(-50%, -50%) rotate(180deg); }
+.court {
+  position: absolute;
+  inset: 15% 19%;
+  border: 1px solid currentColor;
+  border-radius: calc(var(--cw) * 0.05);
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(0, 0, 0, 0.035) 4px 5px);
+}
+.court b { font-family: var(--font-display); font-weight: 400; font-size: calc(var(--cw) * 0.46); line-height: 1; }
+.court i { position: absolute; bottom: 4%; font-style: normal; font-size: calc(var(--cw) * 0.16); }
+.court::before {
+  content: attr(data-s);
+  position: absolute;
+  top: 4%;
+  font-size: calc(var(--cw) * 0.16);
+}
+.ace { position: absolute; inset: 0; display: grid; place-items: center; }
+.ace span {
+  font-size: calc(var(--cw) * 0.56);
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.6));
+}
+.ace::after {
+  content: '';
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px dashed currentColor;
+  opacity: 0.45;
+}
+.badge {
+  position: absolute;
+  right: 4%;
+  top: 4%;
+  min-width: calc(var(--cw) * 0.22);
+  height: calc(var(--cw) * 0.22);
+  padding-inline: 2px;
+  border-radius: 999px;
+  background: var(--pencil);
+  color: #fff;
+  font-family: var(--font-narrow);
+  font-size: calc(var(--cw) * 0.15);
+  display: grid;
+  place-items: center;
+}
+.badge + .badge { top: 30%; }
+.badge.wild { background: var(--brass-lo); color: var(--brass-hi); }
+.card.wild .front { box-shadow: inset 0 0 0 2px var(--brass), 0 0 14px rgba(243, 208, 128, 0.55); }
+
+.card.mine { cursor: default; }
+.card.mine.trump .front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px rgba(213, 162, 74, 0.85);
+  pointer-events: none;
+}
+.card.playable { cursor: pointer; }
+@media (hover: hover) {
+  .card.playable:hover .cin { transform: translateY(-13%); }
+}
+.card.dim .front { filter: brightness(0.7) saturate(0.6); }
+.card.sel .cin { transform: translateY(-17%); }
+.card.sel .front { box-shadow: 0 0 0 3px var(--brass-hi), 0 8px 16px rgba(0, 0, 0, 0.45); }
+.card.tgt { cursor: pointer; }
+.card.tgt .front { animation: tgtpulse 1s ease-in-out infinite; }
+.card.nope .cin { animation: nope 0.35s; }
+.card.open .front { box-shadow: 0 0 0 2px rgba(255, 149, 132, 0.55), 0 3px 9px rgba(0, 0, 0, 0.38); }
+
+/* стопки */
+.pile {
+  position: absolute;
+  width: var(--cw);
+  height: var(--ch);
+  border-radius: calc(var(--cw) * 0.085);
+  pointer-events: none;
+}
+#deck-pile { z-index: 2; }
+#bito-pile { z-index: 34; }
+#trump-chip { z-index: 5; }
+.pile .count {
+  position: absolute;
+  left: 50%;
+  bottom: -26px;
+  transform: translateX(-50%);
+  font-family: var(--font-hand);
+  font-size: 18px;
+  color: var(--cream);
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+#deck-pile .stack, #bito-pile .stack {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: calc(var(--cw) * 0.055) solid #efe5cf;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 215, 140, 0.24) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-45deg, rgba(255, 215, 140, 0.24) 0 1px, transparent 1px 7px),
+    var(--back);
+}
+#deck-pile .stack { box-shadow: 1px 1px 0 #d9ceb5, 2px 2px 0 #c9bea4, 3px 3px 0 #d9ceb5, 4px 4px 0 #b9ae95, 6px 7px 12px rgba(0, 0, 0, 0.4); }
+#bito-pile .stack:nth-child(1) { transform: rotate(-9deg); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35); }
+#bito-pile .stack:nth-child(2) { transform: rotate(6deg) translate(3px, -2px); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35); }
+.trump-chip {
+  position: absolute;
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(241, 228, 200, 0.25);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.trump-chip .s { font-size: 16px; }
+.trump-chip .s.red { color: #ff8a80; }
+
+/* соперник */
+#opp {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 300px;
+}
+.portrait {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  background: radial-gradient(circle at 40% 30%, var(--walnut-3), var(--walnut));
+  box-shadow: 0 0 0 2px var(--brass), 0 4px 10px rgba(0, 0, 0, 0.45);
+}
+.portrait.boss { box-shadow: 0 0 0 2px var(--brass), 0 0 0 5px var(--ink-red), 0 4px 12px rgba(0, 0, 0, 0.5); }
+.opp-name { font-family: var(--font-display); font-size: 18px; line-height: 1.1; }
+.opp-rule {
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.25;
+  color: var(--cream-dim);
+}
+.opp-rule b { color: var(--brass-hi); font-weight: 700; }
+.bubble {
+  position: absolute;
+  z-index: 80;
+  max-width: 230px;
+  padding: 6px 13px 7px;
+  border-radius: 16px;
+  background: var(--notebook);
+  color: var(--pencil);
+  font-family: var(--font-hand);
+  font-size: 19px;
+  line-height: 1.15;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  animation: pop 0.25s var(--ease);
+  pointer-events: none;
+}
+.bubble::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 14px;
+  border: 7px solid transparent;
+  border-right-color: var(--notebook);
+  border-left: 0;
+}
+
+#hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 75;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  pointer-events: none;
+}
+#status {
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--cream);
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  text-wrap: balance;
+  max-width: 460px;
+}
+#status.mine { color: #fff6df; }
+#hud .btn { pointer-events: auto; }
+.choice {
+  position: absolute;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+}
+.choice .btn.ghost { background: var(--walnut-2); }
+
+/* ---------- эффекты ---------- */
+#fx { position: fixed; inset: 0; pointer-events: none; z-index: 120; }
+.float {
+  position: absolute;
+  font-family: var(--font-hand);
+  font-size: 24px;
+  color: var(--brass-hi);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  animation: floatup 1.3s ease-out forwards;
+}
+.float.note { color: var(--cream); font-size: 20px; }
+.banner {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 7vw, 64px);
+  color: var(--brass-hi);
+  text-shadow: 0 3px 0 var(--brass-lo), 0 10px 26px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  animation: banner 1.1s var(--ease) forwards;
+}
+#tip {
+  position: fixed;
+  z-index: 130;
+  width: min(280px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--walnut-2);
+  border: 1px solid var(--brass-lo);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  line-height: 1.4;
+}
+#tip h4 { margin: 0 0 2px; font-family: var(--font-display); font-weight: 400; font-size: 18px; color: var(--brass-hi); }
+#tip .rar { font-family: var(--font-narrow); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-dim); }
+#tip p { margin: 6px 0 0; }
+#tip .tip-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+/* ---------- модальные окна ---------- */
+#modal {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(4, 12, 9, 0.62);
+  overflow-y: auto;
+}
+.sheet {
+  position: relative;
+  width: min(440px, 100%);
+  padding: 22px 26px 22px 46px;
+  border-radius: 3px;
+  color: var(--pencil);
+  font-family: var(--font-hand);
+  background-color: var(--notebook);
+  background-image:
+    linear-gradient(90deg, transparent 30px, var(--margin-line) 30px 31.5px, transparent 31.5px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 100% 100%, 18px 18px, 18px 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  transform: rotate(-0.8deg);
+  animation: sheetin 0.35s var(--ease);
+}
+.sheet h2 { margin: 0 0 4px; font-family: var(--font-hand); font-weight: 400; font-size: 40px; line-height: 1; }
+.sheet h2.lose { color: #a6352a; }
+.sheet .sub { font-size: 19px; margin-bottom: 12px; color: #4b578c; }
+.tally { display: flex; flex-direction: column; gap: 2px; min-height: 24px; }
+.tally-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 21px;
+  line-height: 1.3;
+  animation: rowin 0.3s var(--ease);
+}
+.tally-row .v { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tally-row.minus { color: #a6352a; }
+.tally-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 2px solid var(--pencil);
+  font-size: 26px;
+}
+.sheet-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; font-family: var(--font-ui); }
+.panel {
+  width: min(560px, 100%);
+  max-height: calc(100% - 8px);
+  overflow-y: auto;
+  padding: 22px 24px;
+  border-radius: 14px;
+  background: var(--walnut-2);
+  border: 1px solid var(--brass-lo);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  line-height: 1.5;
+  animation: sheetin 0.3s var(--ease);
+}
+.panel h2 { margin: 0 0 10px; font-family: var(--font-display); font-weight: 400; font-size: 28px; color: var(--brass-hi); }
+.panel h3 {
+  margin: 18px 0 6px;
+  font-family: var(--font-narrow);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+.panel ul { margin: 0; padding-left: 20px; }
+.panel li { margin: 4px 0; }
+.panel .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.panel .stack-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+
+/* ---------- меню ---------- */
+.menu {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  text-align: center;
+  padding-block: 12px;
+}
+.fan { position: relative; height: 128px; width: 300px; --cw: 70px; --ch: 98px; }
+.fan .card { transition: none; }
+.logo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(42px, 9vw, 86px);
+  line-height: 0.95;
+  color: var(--brass-hi);
+  text-shadow: 0 2px 0 var(--brass-lo), 0 8px 24px rgba(0, 0, 0, 0.55);
+  text-wrap: balance;
+}
+.logo-sub {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-hand);
+  font-size: clamp(20px, 3.4vw, 28px);
+  color: var(--cream);
+  transform: rotate(-2deg);
+  text-shadow: none;
+}
+.menu-btns { display: flex; flex-direction: column; gap: 12px; width: min(300px, 100%); }
+.backs { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.back-opt {
+  width: 74px;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-narrow);
+  font-size: 13px;
+  color: var(--cream-dim);
+}
+.back-opt .mini {
+  width: 52px;
+  height: 72px;
+  border-radius: 6px;
+  border: 3px solid #efe5cf;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 215, 140, 0.26) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(-45deg, rgba(255, 215, 140, 0.26) 0 1px, transparent 1px 6px),
+    var(--bc);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s var(--ease);
+}
+.back-opt.on { color: var(--brass-hi); }
+.back-opt.on .mini { transform: translateY(-6px); box-shadow: 0 0 0 3px var(--brass-hi), 0 8px 16px rgba(0, 0, 0, 0.45); }
+.back-opt.locked .mini { filter: grayscale(1) brightness(0.45); }
+.back-desc { min-height: 42px; max-width: 360px; font-size: 14px; color: var(--cream-dim); line-height: 1.4; }
+.menu-stats { font-family: var(--font-hand); font-size: 18px; color: var(--cream-dim); }
+
+/* ---------- заставка стола ---------- */
+.act-head { text-align: center; }
+.eyebrow {
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+.act-title { margin: 4px 0 2px; font-family: var(--font-display); font-weight: 400; font-size: clamp(34px, 6vw, 52px); line-height: 1.05; }
+.act-sub { font-family: var(--font-hand); font-size: 21px; color: var(--cream-dim); }
+.path { display: flex; justify-content: center; align-items: flex-start; gap: 0; }
+.stop { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 104px; text-align: center; }
+.stop .portrait { width: 46px; height: 46px; font-size: 24px; }
+.stop.done .portrait { filter: grayscale(1) brightness(0.6); }
+.stop.now .portrait { box-shadow: 0 0 0 3px var(--brass-hi), 0 0 18px rgba(243, 208, 128, 0.45); }
+.stop .nm { font-size: 13px; line-height: 1.2; color: var(--cream-dim); }
+.stop.now .nm { color: var(--cream); font-weight: 700; }
+.stop .tag { font-family: var(--font-narrow); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bad); min-height: 14px; }
+.link { flex: 0 0 26px; height: 2px; margin-top: 23px; background: repeating-linear-gradient(90deg, var(--cream-dim) 0 4px, transparent 4px 8px); opacity: 0.6; }
+.opp-card {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 22px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--walnut-2), var(--walnut));
+  border: 1px solid var(--brass-lo);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
+}
+.opp-card .portrait { width: 96px; height: 96px; font-size: 54px; }
+.opp-card h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.1; }
+.opp-card .ttl { font-family: var(--font-hand); font-size: 19px; color: var(--cream-dim); }
+.say {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 13px;
+  border-radius: 14px;
+  background: var(--notebook);
+  color: var(--pencil);
+  font-family: var(--font-hand);
+  font-size: 19px;
+  line-height: 1.2;
+}
+.rule-box {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 149, 132, 0.55);
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+.rule-box b { display: block; font-family: var(--font-narrow); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bad); }
+.meta-line { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; font-size: 14px; color: var(--cream-dim); }
+.meta-line b { color: var(--brass-hi); font-family: var(--font-hand); font-size: 20px; font-weight: 400; }
+.center-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+/* ---------- барахолка ---------- */
+.shop-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.shop-head h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(32px, 5vw, 44px); line-height: 1; }
+.offers { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 14px; }
+.offer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(42, 28, 19, 0.92), rgba(29, 19, 13, 0.92));
+  border: 1px solid rgba(213, 162, 74, 0.35);
+}
+.offer .ico { display: flex; align-items: center; gap: 10px; }
+.offer .token, .offer .trick { cursor: default; }
+.offer .token { width: 52px; height: 52px; font-size: 26px; }
+.offer .trick { width: 40px; height: 54px; font-size: 22px; }
+.offer h3 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.15; }
+.offer .kind { font-family: var(--font-narrow); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-dim); }
+.offer .kind.q2 { color: var(--q2); }
+.offer .kind.q3 { color: var(--q3); }
+.offer .kind.q4 { color: var(--q4); }
+.offer p { margin: 0; font-size: 14px; line-height: 1.4; color: #e3d5b6; flex: 1; }
+.offer .buy-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.price-tag {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--pencil);
+  background: var(--notebook);
+  padding: 1px 10px 2px;
+  border-radius: 3px;
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+.offer.sold { opacity: 0.45; }
+.stamp {
+  position: absolute;
+  right: 14px;
+  bottom: 18px;
+  padding: 2px 8px;
+  border: 2px solid var(--bad);
+  color: var(--bad);
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: rotate(8deg);
+}
+.owned { display: flex; flex-direction: column; gap: 10px; }
+.owned-list { display: flex; gap: 10px; flex-wrap: wrap; }
+.owned-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 8px 8px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(241, 228, 200, 0.14);
+  font-size: 14px;
+}
+.section-label {
+  font-family: var(--font-narrow);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+.muted { color: var(--cream-dim); font-size: 14px; }
+.shop-actions { display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; }
+
+/* ---------- итог забега ---------- */
+.end-wrap { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; align-items: center; text-align: center; padding-top: 20px; }
+.unlock {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--brass);
+  background: rgba(213, 162, 74, 0.12);
+  color: var(--brass-hi);
+}
+
+/* ---------- анимации ---------- */
+@keyframes wiggle {
+  0% { transform: rotate(0) scale(1); }
+  25% { transform: rotate(-14deg) scale(1.18); }
+  55% { transform: rotate(10deg) scale(1.12); }
+  100% { transform: rotate(0) scale(1); }
+}
+@keyframes nope {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-7%); }
+  75% { transform: translateX(7%); }
+}
+@keyframes tgtpulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(154, 217, 146, 0.95), 0 3px 9px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(154, 217, 146, 0.45), 0 3px 9px rgba(0, 0, 0, 0.4); }
+}
+@keyframes btnpulse {
+  0%, 100% { box-shadow: 0 3px 0 var(--brass-lo), 0 7px 16px rgba(0, 0, 0, 0.35); }
+  50% { box-shadow: 0 3px 0 var(--brass-lo), 0 0 0 6px rgba(243, 208, 128, 0.25), 0 7px 16px rgba(0, 0, 0, 0.35); }
+}
+@keyframes pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes floatup {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.8); }
+  15% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -220%) scale(1); }
+}
+@keyframes banner {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(-4deg); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.06) rotate(-2deg); }
+  75% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-2deg); }
+  100% { opacity: 0; transform: translate(-50%, -62%) scale(1) rotate(-2deg); }
+}
+@keyframes sheetin { from { opacity: 0; transform: translateY(18px) rotate(-0.8deg); } to { opacity: 1; } }
+@keyframes rowin { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 719px) {
+  #topbar { gap: 6px 12px; }
+  .trays { margin-left: 0; width: 100%; gap: 10px; flex-wrap: nowrap; }
+  .tray { gap: 5px; }
+  .tray-label { display: none; }
+  #btn-pause { margin-left: auto; width: 34px; height: 34px; }
+  .token, .slot { width: 34px; height: 34px; font-size: 17px; }
+  .trick, .trick-slot { width: 28px; height: 38px; font-size: 16px; }
+  .portrait { width: 44px; height: 44px; font-size: 24px; }
+  .opp-name { font-size: 16px; }
+  .opp-rule { font-size: 11.5px; }
+  .opp-card { flex-direction: column; align-items: center; text-align: center; padding: 18px 16px; }
+  .opp-card .portrait { width: 80px; height: 80px; font-size: 44px; }
+  .meta-line { justify-content: center; }
+  .stop { width: 84px; }
+  .link { flex-basis: 14px; }
+  #status { font-size: 13.5px; }
+  .btn { font-size: 15px; padding: 10px 16px; }
+  .sheet { padding: 18px 18px 18px 40px; }
+  .sheet h2 { font-size: 34px; }
+  .tally-row { font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card .cin { transition-duration: 0.01s; }
+  .token.fire, .card.tgt .front, .btn.pulse, .bubble, .sheet, .panel, .tally-row { animation: none; }
+  .float, .banner { animation-duration: 0.8s; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="topbar" hidden></div>
+  <div id="stage">
+    <section id="screen-menu" class="screen"></section>
+    <section id="screen-intro" class="screen" hidden></section>
+    <section id="screen-game" class="screen" hidden>
+      <div id="board">
+        <div id="opp"></div>
+        <div id="deck-pile" class="pile" hidden><div class="stack"></div><span class="count"></span></div>
+        <div id="bito-pile" class="pile" hidden><div class="stack"></div><div class="stack"></div><span class="count"></span></div>
+        <div id="trump-chip" class="trump-chip"></div>
+        <div id="hud"><div id="status" aria-live="polite"></div><button id="btn-main" class="btn" hidden></button></div>
+      </div>
+    </section>
+    <section id="screen-shop" class="screen" hidden></section>
+    <section id="screen-end" class="screen" hidden></section>
+  </div>
+</div>
+<div id="modal" hidden></div>
+<div id="tip" hidden></div>
+<div id="fx"></div>
+<script>
+'use strict';
+// ===== Движок подкидного дурака на двоих =====
+// Игрок 0 — человек, игрок 1 — соперник. Колода: deck[0] — открытый козырь под колодой,
+// карты берутся с конца массива.
+
+const SUITS = ['♠', '♣', '♥', '♦'];
+const SUIT_NAMES = ['пики', 'трефы', 'червы', 'бубны'];
+const SUIT_GEN = ['пик', 'треф', 'червей', 'бубён'];
+const RANK_LABEL = { 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'В', 12: 'Д', 13: 'К', 14: 'Т' };
+const RANK_NAME = { 6: 'шестёрка', 7: 'семёрка', 8: 'восьмёрка', 9: 'девятка', 10: 'десятка', 11: 'валет', 12: 'дама', 13: 'король', 14: 'туз' };
+const isRed = (s) => s >= 2;
+const sameColor = (a, b) => isRed(a) === isRed(b);
+const cardName = (c) => `${RANK_LABEL[c.r]}${SUITS[c.s]}`;
+
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffle(arr, rng) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function defaultRules() {
+  return {
+    minRank: 6,
+    handSize: [6, 6],
+    limit: [6, 6],            // сколько карт может быть в одном отбое, когда атакует этот игрок
+    firstBoutLimit: [5, 5],   // в первом отбое — не больше пяти
+    transfer: [false, false], // переводной
+    sixBeatsAce: [false, false],
+    queenSpades: [false, false],
+    jacksTrump: [false, false],
+    doubleTrump: [false, false],
+    neighborThrow: [false, false],
+    freeThrowOnTake: [false, false],
+    firstAttacker: null,
+  };
+}
+
+class DurakGame {
+  constructor(rules, rng) {
+    this.rules = rules;
+    this.rng = rng;
+    this.deck = [];
+    this.hands = [[], []];
+    this.table = [];          // [{a, by, d, dby}]
+    this.discard = [];
+    this.trumpSuit = 0;
+    this.attacker = 0;
+    this.defender = 1;
+    this.taking = false;
+    this.defStart = 0;
+    this.boutNo = 0;
+    this.over = false;
+    this.result = null;       // 'win' | 'lose' | 'draw' — с точки зрения игрока 0
+    this.known = [new Set(), new Set()]; // карты, которые все видели у игрока в руке
+    this.cards = new Map();
+    this.listeners = [];
+    this.stats = { bito: [0, 0], took: [0, 0], played: [0, 0] };
+  }
+
+  on(fn) { this.listeners.push(fn); }
+  emit(type, data = {}) { for (const fn of this.listeners) fn(type, data, this); }
+
+  setup() {
+    let id = 0;
+    for (let s = 0; s < 4; s++) {
+      for (let r = this.rules.minRank; r <= 14; r++) {
+        const c = { id: id++, s, r, wild: false };
+        this.deck.push(c);
+        this.cards.set(c.id, c);
+      }
+    }
+    shuffle(this.deck, this.rng);
+    const maxHand = Math.max(...this.rules.handSize);
+    for (let i = 0; i < maxHand; i++) {
+      for (const p of [0, 1]) {
+        if (this.hands[p].length < this.rules.handSize[p] && this.deck.length > 1) this.hands[p].push(this.deck.pop());
+      }
+    }
+    this.trumpSuit = this.deck[0].s;
+  }
+
+  get trumpCard() { return this.deck.length ? this.deck[0] : null; }
+  get deckSize() { return this.rules.minRank === 6 ? 36 : (15 - this.rules.minRank) * 4; }
+
+  start() {
+    let first = this.rules.firstAttacker;
+    if (first == null) {
+      let best = null;
+      for (const p of [0, 1]) {
+        for (const c of this.hands[p]) {
+          if (c.s === this.trumpSuit && (!best || c.r < best.r)) best = { p, r: c.r };
+        }
+      }
+      first = best ? best.p : (this.rng() < 0.5 ? 0 : 1);
+    }
+    this.attacker = first;
+    this.defender = 1 - first;
+    this.defStart = this.hands[this.defender].length;
+    this.emit('start', { attacker: first });
+  }
+
+  // ---- правила старшинства ----
+  isTrump(c, who) {
+    if (c.s === this.trumpSuit) return true;
+    if (this.rules.jacksTrump[who] && c.r === 11) return true;
+    if (this.rules.doubleTrump[who] && sameColor(c.s, this.trumpSuit)) return true;
+    return false;
+  }
+
+  power(c) { return c.r * 2 + (c.s === this.trumpSuit ? 1 : 0); }
+
+  canBeat(att, attWho, def, defWho) {
+    if (def.wild) return true;
+    const aT = this.isTrump(att, attWho);
+    const dT = this.isTrump(def, defWho);
+    if (this.rules.sixBeatsAce[defWho] && def.r === 6 && att.r === 14 && def.s === att.s) return true;
+    if (this.rules.queenSpades[defWho] && def.r === 12 && def.s === 0 && !aT) return true;
+    if (dT && !aT) return true;
+    if (aT && !dT) return false;
+    if (aT && dT) return this.power(def) > this.power(att);
+    return def.s === att.s && def.r > att.r;
+  }
+
+  // ---- состояние отбоя ----
+  hasUnbeaten() { return this.table.some((e) => !e.d); }
+  allBeaten() { return this.table.length > 0 && this.table.every((e) => e.d); }
+
+  tableRanks() {
+    const s = new Set();
+    for (const e of this.table) { s.add(e.a.r); if (e.d) s.add(e.d.r); }
+    return s;
+  }
+
+  boutLimit(who) {
+    const lim = this.rules.limit[who];
+    return this.boutNo === 0 ? Math.min(lim, this.rules.firstBoutLimit[who]) : lim;
+  }
+
+  capacity() { return Math.min(this.boutLimit(this.attacker), this.defStart); }
+
+  // Чей сейчас ход: атакующий подкидывает только когда всё отбито (или когда соперник берёт).
+  actor() {
+    if (this.over) return null;
+    if (this.taking) return this.attacker;
+    if (this.hasUnbeaten()) return this.defender;
+    return this.attacker;
+  }
+
+  rankAllowed(c, who) {
+    if (this.table.length === 0) return true;
+    if (this.taking && this.rules.freeThrowOnTake[who]) return true;
+    const ranks = this.tableRanks();
+    if (ranks.has(c.r)) return true;
+    return this.rules.neighborThrow[who] && (ranks.has(c.r - 1) || ranks.has(c.r + 1));
+  }
+
+  legalAttacks(who) {
+    if (this.over || who !== this.attacker || this.actor() !== who) return [];
+    if (this.table.length >= this.capacity()) return [];
+    return this.hands[who].filter((c) => this.rankAllowed(c, who));
+  }
+
+  defendTargets(who, card) {
+    if (this.over || who !== this.defender || this.taking) return [];
+    const res = [];
+    this.table.forEach((e, i) => {
+      if (!e.d && this.canBeat(e.a, e.by, card, who)) res.push(i);
+    });
+    return res;
+  }
+
+  canTransferWith(who, card) {
+    if (this.over || who !== this.defender || this.taking || !this.rules.transfer[who]) return false;
+    if (this.table.length === 0 || this.table.some((e) => e.d)) return false;
+    if (!this.table.every((e) => e.a.r === card.r)) return false;
+    const newDef = this.attacker;
+    return this.table.length + 1 <= Math.min(this.boutLimit(who), this.hands[newDef].length);
+  }
+
+  canTake(who) { return !this.over && who === this.defender && !this.taking && this.hasUnbeaten(); }
+  canPass(who) { return !this.over && who === this.attacker && !this.taking && this.allBeaten(); }
+  canFinishTake(who) { return !this.over && who === this.attacker && this.taking; }
+
+  // ---- действия ----
+  _fromHand(who, id) {
+    const h = this.hands[who];
+    const i = h.findIndex((c) => c.id === id);
+    if (i < 0) return null;
+    return h.splice(i, 1)[0];
+  }
+
+  attack(who, id) {
+    const card = this.hands[who].find((c) => c.id === id);
+    if (!card || !this.legalAttacks(who).includes(card)) return false;
+    this._fromHand(who, id);
+    this.table.push({ a: card, by: who, d: null, dby: null });
+    this.stats.played[who]++;
+    const kind = this.table.length === 1 ? 'lead' : (this.taking ? 'chase' : 'throw');
+    this.emit('attack', { who, card, kind });
+    return true;
+  }
+
+  defend(who, id, target) {
+    const card = this.hands[who].find((c) => c.id === id);
+    const e = this.table[target];
+    if (!card || !e || e.d || who !== this.defender || this.taking || this.over) return false;
+    if (!this.canBeat(e.a, e.by, card, who)) return false;
+    this._fromHand(who, id);
+    e.d = card;
+    e.dby = who;
+    this.stats.played[who]++;
+    this.emit('defend', { who, card, target: e.a });
+    return true;
+  }
+
+  transfer(who, id) {
+    const card = this.hands[who].find((c) => c.id === id);
+    if (!card || !this.canTransferWith(who, card)) return false;
+    this._fromHand(who, id);
+    this.table.push({ a: card, by: who, d: null, dby: null });
+    const oldAttacker = this.attacker;
+    this.attacker = who;
+    this.defender = oldAttacker;
+    this.defStart = this.hands[oldAttacker].length;
+    this.stats.played[who]++;
+    this.emit('transfer', { who, card });
+    return true;
+  }
+
+  take(who) {
+    if (!this.canTake(who)) return false;
+    this.taking = true;
+    this.emit('take', { who });
+    return true;
+  }
+
+  pass(who) {
+    if (!this.canPass(who)) return false;
+    this._endBout(false);
+    return true;
+  }
+
+  finishTake(who) {
+    if (!this.canFinishTake(who)) return false;
+    this._endBout(true);
+    return true;
+  }
+
+  _endBout(taken) {
+    const entries = this.table;
+    const cards = [];
+    for (const e of entries) { cards.push(e.a); if (e.d) cards.push(e.d); }
+    const att = this.attacker;
+    const def = this.defender;
+    this.table = [];
+    this.taking = false;
+    if (taken) {
+      this.hands[def].push(...cards);
+      for (const c of cards) this.known[def].add(c.id);
+      this.stats.took[def]++;
+      this.emit('took', { who: def, cards, entries });
+    } else {
+      this.discard.push(...cards);
+      this.stats.bito[def]++;
+      this.emit('bito', { attacker: att, defender: def, cards, entries });
+    }
+    this.boutNo++;
+    this._drawUpTo(att);
+    this._drawUpTo(def);
+    if (!taken) { this.attacker = def; this.defender = att; }
+    this.defStart = this.hands[this.defender].length;
+    this._checkEnd();
+    if (!this.over) this.emit('bout', { attacker: this.attacker });
+  }
+
+  _drawUpTo(p) {
+    const drawn = [];
+    while (this.hands[p].length < this.rules.handSize[p] && this.deck.length) {
+      const c = this.deck.pop();
+      this.hands[p].push(c);
+      drawn.push(c);
+    }
+    if (drawn.length) this.emit('draw', { who: p, cards: drawn });
+  }
+
+  _checkEnd() {
+    if (this.deck.length) return;
+    const out0 = this.hands[0].length === 0;
+    const out1 = this.hands[1].length === 0;
+    if (!out0 && !out1) return;
+    this.over = true;
+    this.result = out0 && out1 ? 'draw' : out0 ? 'win' : 'lose';
+    this.emit('over', { result: this.result });
+  }
+
+  // ---- служебное для фокусов и талисманов ----
+  cardsInHand(who) { return this.hands[who]; }
+
+  moveToDiscard(who, id) {
+    const c = this._fromHand(who, id);
+    if (!c) return null;
+    this.discard.push(c);
+    this.emit('discarded', { who, card: c });
+    return c;
+  }
+
+  give(from, id) {
+    const c = this._fromHand(from, id);
+    if (!c) return null;
+    const to = 1 - from;
+    this.hands[to].push(c);
+    this.known[to].add(c.id);
+    this.emit('gave', { from, to, card: c });
+    return c;
+  }
+
+  // Вернуть руку в колоду (над открытым козырем), перемешать и добрать столько же.
+  reshuffleHand(who) {
+    if (!this.deck.length) return false;
+    const n = this.hands[who].length;
+    const bottom = this.deck[0];
+    const rest = this.deck.slice(1).concat(this.hands[who]);
+    this.hands[who] = [];
+    shuffle(rest, this.rng);
+    this.deck = [bottom, ...rest];
+    for (let i = 0; i < n && this.deck.length; i++) this.hands[who].push(this.deck.pop());
+    this.known[who].clear();
+    this.emit('reshuffled', { who });
+    return true;
+  }
+
+  // Карта из колоды (не открытый козырь), отвечающая условию — для «подтасовок» при раздаче.
+  pullFromDeck(pred) {
+    const idx = [];
+    for (let i = 1; i < this.deck.length; i++) if (pred(this.deck[i])) idx.push(i);
+    if (!idx.length) return null;
+    const i = idx[Math.floor(this.rng() * idx.length)];
+    return { card: this.deck[i], index: i };
+  }
+
+  // Проверка целостности: каждая карта ровно в одном месте.
+  checkIntegrity() {
+    const seen = new Set();
+    const add = (c, where) => {
+      if (seen.has(c.id)) throw new Error(`карта ${cardName(c)} дважды (${where})`);
+      seen.add(c.id);
+    };
+    this.deck.forEach((c) => add(c, 'колода'));
+    this.hands[0].forEach((c) => add(c, 'рука 0'));
+    this.hands[1].forEach((c) => add(c, 'рука 1'));
+    this.discard.forEach((c) => add(c, 'бита'));
+    for (const e of this.table) { add(e.a, 'стол'); if (e.d) add(e.d, 'стол'); }
+    if (seen.size !== this.cards.size) throw new Error(`потерялись карты: ${seen.size}/${this.cards.size}`);
+    if (this.table.length > 6) throw new Error('больше шести карт в отбое');
+    return true;
+  }
+}
+
+// ===== Соперник =====
+// smart: 0..1 — насколько хорошо играет (бережёт козыри, вовремя берёт, реже ошибается).
+
+function aiValue(g, c, who) {
+  let v = c.r;
+  if (g.isTrump(c, who)) v += 12;
+  if (c.wild) v += 30;
+  return v;
+}
+
+function aiPlanDefense(g, me) {
+  const open = [];
+  g.table.forEach((e, i) => { if (!e.d) open.push(i); });
+  open.sort((i, j) => aiValue(g, g.table[j].a, g.table[j].by) - aiValue(g, g.table[i].a, g.table[i].by));
+  const used = new Set();
+  const plan = [];
+  for (const i of open) {
+    const e = g.table[i];
+    let best = null;
+    let bestV = Infinity;
+    for (const c of g.hands[me]) {
+      if (used.has(c.id) || !g.canBeat(e.a, e.by, c, me)) continue;
+      const v = aiValue(g, c, me);
+      if (v < bestV) { bestV = v; best = c; }
+    }
+    if (!best) return null;
+    used.add(best.id);
+    plan.push({ card: best, target: i, v: bestV });
+  }
+  return plan;
+}
+
+function aiLegalActions(g, me) {
+  const acts = [];
+  if (g.actor() !== me) return acts;
+  if (g.taking) {
+    for (const c of g.legalAttacks(me)) acts.push({ type: 'attack', id: c.id });
+    acts.push({ type: 'finishTake' });
+  } else if (me === g.defender && g.hasUnbeaten()) {
+    for (const c of g.hands[me]) {
+      for (const t of g.defendTargets(me, c)) acts.push({ type: 'defend', id: c.id, target: t });
+      if (g.canTransferWith(me, c)) acts.push({ type: 'transfer', id: c.id });
+    }
+    acts.push({ type: 'take' });
+  } else {
+    for (const c of g.legalAttacks(me)) acts.push({ type: 'attack', id: c.id });
+    if (g.canPass(me)) acts.push({ type: 'pass' });
+  }
+  return acts;
+}
+
+function aiDecide(g, me, smart, rng) {
+  const opp = 1 - me;
+  const deckLeft = g.deck.length;
+  const hand = g.hands[me];
+  const val = (c) => aiValue(g, c, me);
+  const lowest = (cards) => cards.reduce((a, b) => (val(b) < val(a) ? b : a));
+
+  // Иногда соперник ошибается — тем чаще, чем он проще.
+  if (rng() < (1 - smart) * 0.45) {
+    const acts = aiLegalActions(g, me).filter((a) => !(a.type === 'take' && deckLeft === 0 && aiPlanDefense(g, me)));
+    if (acts.length) return acts[Math.floor(rng() * acts.length)];
+  }
+
+  // Соперник берёт — подкидываем вдогонку.
+  if (g.taking) {
+    const legal = g.legalAttacks(me);
+    const good = legal.filter((c) => {
+      if (g.isTrump(c, me)) return deckLeft === 0 && c.r <= 9;
+      return deckLeft === 0 || c.r <= (smart > 0.6 ? 11 : 13);
+    });
+    return good.length ? { type: 'attack', id: lowest(good).id } : { type: 'finishTake' };
+  }
+
+  // Защита.
+  if (me === g.defender && g.hasUnbeaten()) {
+    const plan = aiPlanDefense(g, me);
+    const transfers = hand.filter((c) => g.canTransferWith(me, c));
+    if (transfers.length) {
+      const t = lowest(transfers);
+      const cheapest = plan ? Math.min(...plan.map((p) => p.v)) : Infinity;
+      if (!g.isTrump(t, me) || !plan || deckLeft === 0) {
+        if (val(t) <= cheapest + 3) return { type: 'transfer', id: t.id };
+      }
+    }
+    if (!plan) return { type: 'take' };
+    if (deckLeft >= 8 && smart >= 0.45) {
+      const bigTrump = plan.some((p) => g.isTrump(p.card, me) && p.card.r >= 12);
+      const cheapTable = g.table.length <= 2 && g.table.every((e) => aiValue(g, e.a, e.by) <= 9);
+      if (bigTrump && cheapTable && rng() < smart * 0.75) return { type: 'take' };
+    }
+    return { type: 'defend', id: plan[0].card.id, target: plan[0].target };
+  }
+
+  // Атака.
+  const legal = g.legalAttacks(me);
+  if (g.table.length === 0) {
+    if (!legal.length) return null;
+    const counts = {};
+    for (const c of hand) counts[c.r] = (counts[c.r] || 0) + 1;
+    const allTrumps = hand.every((c) => g.isTrump(c, me));
+    let score = (c) => val(c) - (counts[c.r] - 1) * 2.5 + (g.isTrump(c, me) && !allTrumps ? 6 : 0);
+    if (deckLeft === 0 && smart > 0.55 && g.hands[opp].length <= 2) {
+      // Под конец бьём самой сильной — пусть попробует отбиться.
+      score = (c) => -val(c) - (counts[c.r] - 1) * 3;
+    }
+    return { type: 'attack', id: legal.reduce((a, b) => (score(b) < score(a) ? b : a)).id };
+  }
+
+  // Всё отбито — подкидываем или «бито».
+  const cap = deckLeft > 12 ? 10 : deckLeft > 4 ? 12 : 14;
+  const good = legal.filter((c) => {
+    if (deckLeft === 0) return !g.isTrump(c, me) || c.r <= 11 || hand.length <= 2;
+    return !g.isTrump(c, me) && c.r <= cap;
+  });
+  if (good.length && (smart > 0.3 || rng() < 0.7)) return { type: 'attack', id: lowest(good).id };
+  return g.canPass(me) ? { type: 'pass' } : null;
+}
+
+function aiApply(g, me, act) {
+  if (!act) return false;
+  switch (act.type) {
+    case 'attack': return g.attack(me, act.id);
+    case 'defend': return g.defend(me, act.id, act.target);
+    case 'transfer': return g.transfer(me, act.id);
+    case 'take': return g.take(me);
+    case 'pass': return g.pass(me);
+    case 'finishTake': return g.finishTake(me);
+    default: return false;
+  }
+}
+
+// ===== Талисманы, фокусы, соперники, рубашки =====
+
+const RARITY = {
+  1: { name: 'обычный', weight: 60 },
+  2: { name: 'редкий', weight: 28 },
+  3: { name: 'особый', weight: 10 },
+  4: { name: 'легендарный', weight: 3 },
+};
+
+// Хуки талисманов получают fx — объект с earn(сумма, подпись) и доступом к партии.
+const TALISMANS = [
+  {
+    id: 'oborona', name: 'Оборона', icon: '🛡️', rarity: 1, price: 4,
+    desc: '+1 монета каждый раз, когда ты отбился.',
+    on: { bito(fx, ev) { if (ev.defender === 0) fx.earn(1, 'Оборона'); } },
+  },
+  {
+    id: 'kopilka', name: 'Копилка', icon: '🐷', rarity: 1, price: 4,
+    desc: 'Победа: +1 монета за каждые две карты, оставшиеся у дурака.',
+    on: { end(fx, g) { const n = Math.floor(g.hands[1].length / 2); if (fx.won && n) fx.earn(n, `Копилка (у дурака на руках: ${g.hands[1].length})`); } },
+  },
+  {
+    id: 'karman', name: 'Бита в карман', icon: '💰', rarity: 1, price: 4,
+    desc: '+1 монета каждый раз, когда соперник забирает карты.',
+    on: { took(fx, ev) { if (ev.who === 1) fx.earn(1, 'Бита в карман'); } },
+  },
+  {
+    id: 'pogony', name: 'Погоны', icon: '🎖️', rarity: 2, price: 5,
+    desc: 'Победа: +3 монеты за каждую шестёрку, оставшуюся у дурака.',
+    on: {
+      end(fx, g) {
+        const n = g.hands[1].filter((c) => c.r === 6).length;
+        if (fx.won && n) fx.earn(3 * n, `Погоны: ${n} × шестёрка`);
+      },
+    },
+  },
+  {
+    id: 'sberkniga', name: 'Сберкнижка', icon: '📒', rarity: 2, price: 5,
+    desc: 'После победы: +1 монета за каждые 5 монет в кошельке (до +5).',
+    on: { end(fx) { if (fx.won) { const n = Math.min(5, Math.floor(fx.run.coins / 5)); if (n) fx.earn(n, 'Сберкнижка: проценты'); } } },
+  },
+  {
+    id: 'zoloto', name: 'Золотой козырь', icon: '👑', rarity: 2, price: 6,
+    desc: '+1 монета за каждый твой козырь, ушедший в биту.',
+    on: {
+      bito(fx, ev, g) {
+        let n = 0;
+        for (const e of ev.entries) {
+          if (e.by === 0 && g.isTrump(e.a, 0)) n++;
+          if (e.d && e.dby === 0 && g.isTrump(e.d, 0)) n++;
+        }
+        if (n) fx.earn(n, 'Золотой козырь');
+      },
+    },
+  },
+  {
+    id: 'shesterka', name: 'Шестёрка бьёт туза', icon: '6️⃣', rarity: 1, price: 4,
+    desc: 'Твои шестёрки бьют тузов той же масти. По-дворовому.',
+    rules(r) { r.sixBeatsAce[0] = true; },
+  },
+  {
+    id: 'dama', name: 'Пиковая дама', icon: '🖤', rarity: 1, price: 4,
+    desc: 'Твоя дама пик бьёт любую некозырную карту.',
+    rules(r) { r.queenSpades[0] = true; },
+  },
+  {
+    id: 'ruki', name: 'Щедрая рука', icon: '🖐️', rarity: 1, price: 4,
+    desc: 'Соперник добирает до 7 карт вместо 6 — пусть помучается.',
+    rules(r) { r.handSize[1] += 1; },
+  },
+  {
+    id: 'sosedi', name: 'Соседи', icon: '🏘️', rarity: 3, price: 8,
+    desc: 'Подкидывать можно и карты соседнего достоинства: к восьмёрке — семёрку и девятку.',
+    rules(r) { r.neighborThrow[0] = true; },
+  },
+  {
+    id: 'perevod', name: 'Переводной', icon: '🔄', rarity: 2, price: 6,
+    desc: 'Можешь переводить: положи карту того же достоинства — и отбивается уже соперник.',
+    rules(r) { r.transfer[0] = true; },
+  },
+  {
+    id: 'valet', name: 'Валет-хамелеон', icon: '🎭', rarity: 2, price: 6,
+    desc: 'Все твои валеты считаются козырями.',
+    rules(r) { r.jacksTrump[0] = true; },
+  },
+  {
+    id: 'vdogonku', name: 'Вдогонку', icon: '🏃', rarity: 3, price: 7,
+    desc: 'Когда соперник берёт, подкидывай карты любого достоинства.',
+    rules(r) { r.freeThrowOnTake[0] = true; },
+  },
+  {
+    id: 'tuz', name: 'Туз в рукаве', icon: '🧥', rarity: 3, price: 7,
+    desc: 'В начале партии у тебя на руках всегда есть туз.',
+    deal(fx, g) {
+      if (g.hands[0].some((c) => c.r === 14)) return;
+      const pulled = g.pullFromDeck((c) => c.r === 14);
+      if (!pulled) return;
+      const worst = lowestCard(g, 0);
+      const hi = g.hands[0].indexOf(worst);
+      g.hands[0][hi] = pulled.card;
+      g.deck[pulled.index] = worst;
+      fx.note('Туз в рукаве');
+    },
+  },
+  {
+    id: 'karmannik', name: 'Карманник', icon: '🤏', rarity: 3, price: 7,
+    desc: 'В начале партии твоя худшая карта меняется на случайную карту соперника.',
+    deal(fx, g) {
+      const mine = lowestCard(g, 0);
+      const theirs = g.hands[1][Math.floor(g.rng() * g.hands[1].length)];
+      const a = g.hands[0].indexOf(mine);
+      const b = g.hands[1].indexOf(theirs);
+      g.hands[0][a] = theirs;
+      g.hands[1][b] = mine;
+      g.known[1].add(mine.id);
+      fx.note('Карманник');
+    },
+  },
+  {
+    id: 'dvoynoy', name: 'Двойной козырь', icon: '⭐', rarity: 4, price: 10,
+    desc: 'Масть того же цвета, что и козырь, — тоже твой козырь.',
+    rules(r) { r.doubleTrump[0] = true; },
+  },
+  {
+    id: 'obmen', name: 'Козырная шестёрка', icon: '🔁', rarity: 1, price: 3, active: true,
+    desc: 'Раз за партию: обменяй козырную шестёрку на открытый козырь под колодой.',
+    canUse(g) {
+      return g.deck.length >= 2 && g.hands[0].some((c) => c.r === 6 && c.s === g.trumpSuit);
+    },
+    use(fx, g) {
+      const six = g.hands[0].find((c) => c.r === 6 && c.s === g.trumpSuit);
+      const bottom = g.deck[0];
+      g.hands[0][g.hands[0].indexOf(six)] = bottom;
+      g.deck[0] = six;
+      fx.note(`Обмен: забрал ${cardName(bottom)}`);
+    },
+  },
+  {
+    id: 'shuler', name: 'Шулерская пересдача', icon: '🎩', rarity: 2, price: 6, active: true,
+    desc: 'Раз за партию: две твои худшие карты уходят в биту, а ты берёшь две из колоды.',
+    canUse(g) { return g.deck.length >= 2 && g.hands[0].length >= 2; },
+    use(fx, g) {
+      for (let i = 0; i < 2; i++) g.moveToDiscard(0, lowestCard(g, 0).id);
+      for (let i = 0; i < 2 && g.deck.length; i++) g.hands[0].push(g.deck.pop());
+      fx.note('Пересдача');
+    },
+  },
+  {
+    id: 'pamyat', name: 'Хорошая память', icon: '🧠', rarity: 1, price: 4,
+    desc: 'Карты, которые соперник забрал со стола, видны у него в руке.',
+  },
+  {
+    id: 'glaz', name: 'Зоркий глаз', icon: '👁️', rarity: 1, price: 3,
+    desc: 'Видишь верхнюю карту колоды.',
+  },
+  {
+    id: 'mirovaya', name: 'Мировая', icon: '🤝', rarity: 1, price: 3,
+    desc: 'Ничья засчитывается как победа.',
+  },
+  {
+    id: 'perviy', name: 'Первый ход', icon: '🥇', rarity: 1, price: 3,
+    desc: 'Ты всегда ходишь первым (если у соперника нет своих правил на этот счёт).',
+    rules(r) { if (r.firstAttacker == null) r.firstAttacker = 0; },
+  },
+  {
+    id: 'zhilet', name: 'Бронежилет', icon: '🦺', rarity: 3, price: 7,
+    desc: 'Первое поражение в каждом акте не отнимает сердце.',
+  },
+];
+
+// Фокусы — разовые карточки. target: 'card' — нужно выбрать карту в руке.
+const TRICKS = [
+  {
+    id: 'podsmotr', name: 'Подсмотреть', icon: '👀', price: 3, target: null,
+    desc: 'До конца отбоя видишь все карты соперника.',
+    can: (g) => true,
+    use(fx, g) { fx.peek(); },
+  },
+  {
+    id: 'kraska', name: 'Перекраска', icon: '🎨', price: 4, target: 'card',
+    desc: 'Выбранная карта становится козырной масти.',
+    canCard: (g, c) => c.s !== g.trumpSuit,
+    use(fx, g, c) { c.s = g.trumpSuit; c.painted = true; fx.note(`${RANK_LABEL[c.r]} теперь козырь`); },
+  },
+  {
+    id: 'povysh', name: 'Повышение', icon: '⬆️', price: 3, target: 'card',
+    desc: 'Выбранная карта получает +3 к достоинству (не выше туза).',
+    canCard: (g, c) => c.r < 14,
+    use(fx, g, c) { c.r = Math.min(14, c.r + 3); c.boosted = true; fx.note(`Повышение: ${cardName(c)}`); },
+  },
+  {
+    id: 'vbitu', name: 'В биту!', icon: '🗑️', price: 5, target: 'card',
+    desc: 'Выбранная карта уходит в биту. Последнюю карту так не сбросить.',
+    can: (g) => g.hands[0].length >= 2,
+    canCard: (g) => g.hands[0].length >= 2,
+    use(fx, g, c) { g.moveToDiscard(0, c.id); fx.note('В биту!'); },
+  },
+  {
+    id: 'podarok', name: 'Подарок', icon: '🎁', price: 6, target: 'card',
+    desc: 'Отдай выбранную карту сопернику. Последнюю карту так не отдать.',
+    can: (g) => g.hands[0].length >= 2,
+    canCard: (g) => g.hands[0].length >= 2,
+    use(fx, g, c) { g.give(0, c.id); fx.note('Подарок сопернику'); },
+  },
+  {
+    id: 'smena', name: 'Смена козыря', icon: '🔀', price: 4, target: 'card',
+    desc: 'Козырем становится масть выбранной карты — для обоих игроков.',
+    canCard: (g, c) => c.s !== g.trumpSuit,
+    use(fx, g, c) { g.trumpSuit = c.s; fx.note(`Козырь теперь ${SUIT_NAMES[c.s]}`); },
+  },
+  {
+    id: 'krazha', name: 'Кража', icon: '🧤', price: 5, target: null,
+    desc: 'Забери у соперника его старший козырь, а ему отдай свою младшую карту.',
+    can: (g) => g.hands[1].some((c) => g.isTrump(c, 1)),
+    use(fx, g) {
+      const trumps = g.hands[1].filter((c) => g.isTrump(c, 1));
+      const best = trumps.reduce((a, b) => (g.power(b) > g.power(a) ? b : a));
+      const mine = lowestCard(g, 0);
+      g.hands[1][g.hands[1].indexOf(best)] = mine;
+      g.hands[0][g.hands[0].indexOf(mine)] = best;
+      g.known[1].add(mine.id);
+      fx.note(`Украл ${cardName(best)}`);
+    },
+  },
+  {
+    id: 'peresdacha', name: 'Пересдача', icon: '🔃', price: 3, target: null,
+    desc: 'Замешай свою руку в колоду и возьми столько же новых карт.',
+    can: (g) => g.deck.length >= 1,
+    use(fx, g) { g.reshuffleHand(0); fx.note('Пересдача'); },
+  },
+  {
+    id: 'joker', name: 'Джокер', icon: '🃏', price: 6, target: 'card',
+    desc: 'Выбранная карта до конца партии бьёт любую карту.',
+    canCard: (g, c) => !c.wild,
+    use(fx, g, c) { c.wild = true; fx.note('Джокер!'); },
+  },
+  {
+    id: 'validol', name: 'Валидол', icon: '💊', price: 5, target: null, anytime: true,
+    desc: '+1 сердце (не больше максимума).',
+    can: (g, run) => run.hearts < run.maxHearts,
+    use(fx) { fx.heal(1); },
+  },
+];
+
+function lowestCard(g, who) {
+  return g.hands[who].reduce((a, b) => (aiValue(g, b, who) < aiValue(g, a, who) ? b : a));
+}
+
+const LINES_COMMON = {
+  take: ['Беру.', 'Ладно, беру…', 'Давай сюда.', 'Возьму, не жалко.'],
+  bito: ['Бито!', 'Отбился.', 'Мимо!', 'Не пройдёт.'],
+  pass: ['Бито.', 'Всё, бито.'],
+  transfer: ['Переводной!', 'Держи обратно!'],
+  chase: ['И это возьми.', 'Вдогонку!'],
+  win: ['Дурак! Ха!', 'Ну, бывает.', 'Ещё партейку?'],
+  lose: ['Повезло тебе…', 'Ну ты шулер!', 'Сдаюсь, сдаюсь.'],
+};
+
+const ACTS = [
+  {
+    name: 'Двор', sub: 'лавочка у третьего подъезда',
+    tables: [
+      {
+        id: 'vitek', name: 'Витёк', icon: '🧒', title: 'с соседнего двора', smart: 0.05, reward: 4,
+        rule: null,
+        lines: { hello: ['Сыграем? Я в дурака лучше всех во дворе.'], take: ['Э-э, ну ладно, беру.'], win: ['Дура-а-ак!'] },
+      },
+      {
+        id: 'valya', name: 'Тётя Валя', icon: '👵', title: 'на лавочке с семечками', smart: 0.12, reward: 4,
+        rule: { text: 'Всегда ходит первой.', rules(r) { r.firstAttacker = 1; } },
+        lines: { hello: ['Садись, милок. Я хожу первой, уж не обессудь.'], take: ['Ой, беру, беру.'], bito: ['Бито, касатик.'] },
+      },
+      {
+        id: 'misha', name: 'Дядя Миша', icon: '🧔', title: 'гроза двора', smart: 0.25, reward: 7, boss: true,
+        rule: { text: 'Его шестёрки бьют тузов той же масти.', rules(r) { r.sixBeatsAce[1] = true; } },
+        lines: { hello: ['У нас во дворе шестёрка туза бьёт. Не знал?'], bito: ['Бито, салага.'], win: ['Иди тренируйся.'] },
+      },
+    ],
+  },
+  {
+    name: 'Электричка', sub: 'последний вагон, 23:40',
+    tables: [
+      {
+        id: 'kostya', name: 'Студент Костя', icon: '👨‍🎓', title: 'едет с сессии', smart: 0.32, reward: 5,
+        rule: { text: 'Играет в переводного: может перевести ход картой того же достоинства.', rules(r) { r.transfer[1] = true; } },
+        lines: { hello: ['Только переводной, по-другому скучно.'], transfer: ['Переводим, коллега.'] },
+      },
+      {
+        id: 'lyuba', name: 'Проводница Люба', icon: '👩‍🦰', title: 'до конечной ещё час', smart: 0.4, reward: 5,
+        rule: { text: 'Колода с девяток: 24 карты, партии короткие.', rules(r) { r.minRank = 9; } },
+        lines: { hello: ['Короткая колода — до конечной успеем.'], bito: ['Следующая станция — бито.'] },
+      },
+      {
+        id: 'gosha', name: 'Шулер Гоша', icon: '🎩', title: 'ловкость рук', smart: 0.5, reward: 8, boss: true,
+        rule: {
+          text: 'В начале партии подтягивает себе козыря из колоды.',
+          deal(g) {
+            const mine = g.hands[1].filter((c) => !g.isTrump(c, 1));
+            if (!mine.length) return;
+            const pulled = g.pullFromDeck((c) => c.s === g.trumpSuit);
+            if (!pulled) return;
+            const worst = mine.reduce((a, b) => (b.r < a.r ? b : a));
+            g.hands[1][g.hands[1].indexOf(worst)] = pulled.card;
+            g.deck[pulled.index] = worst;
+          },
+        },
+        lines: { hello: ['Карты не врут. Врут люди.'], win: ['Ловкость рук и никакого мошенства.'], lose: ['Ты чего, тоже шулер?'] },
+      },
+    ],
+  },
+  {
+    name: 'Подпольный клуб', sub: 'вход через котельную',
+    tables: [
+      {
+        id: 'semenych', name: 'Бухгалтер Семёныч', icon: '🧓', title: 'всё учтено', smart: 0.6, reward: 6,
+        rule: { text: 'Его дама пик бьёт любую некозырную карту, а шестёрка — туза той же масти.', rules(r) { r.queenSpades[1] = true; r.sixBeatsAce[1] = true; } },
+        lines: { hello: ['У меня каждая шестёрка на счету. И дама пик тоже.'], bito: ['Сальдо в мою пользу.'], chase: ['Проведём и это.'] },
+      },
+      {
+        id: 'roza', name: 'Мадам Роза', icon: '💃', title: 'хозяйка рулетки', smart: 0.68, reward: 6,
+        rule: { text: 'Когда ты берёшь, подкидывает карты любого достоинства.', rules(r) { r.freeThrowOnTake[1] = true; } },
+        lines: { hello: ['Берёшь — бери всё, дорогуша.'], chase: ['И это тебе, дорогуша.'] },
+      },
+      {
+        id: 'hozyain', name: 'Хозяин', icon: '🤵', title: 'в его клубе свои правила', smart: 0.85, reward: 12, boss: true,
+        rule: { text: 'Его валеты — козыри, и первым всегда ходит он.', rules(r) { r.jacksTrump[1] = true; r.firstAttacker = 1; } },
+        lines: { hello: ['В моём клубе валеты служат мне. И хожу первым я.'], win: ['Следующий.'], lose: ['…Неплохо. Очень неплохо.'] },
+      },
+    ],
+  },
+];
+
+const BACKS = [
+  { id: 'red', name: 'Красная', color: '#8e2323', desc: 'Классика. Без сюрпризов.', unlock: null },
+  {
+    id: 'blue', name: 'Синяя', color: '#21477e', desc: '+1 ячейка для фокусов и случайный фокус на старте.',
+    unlock: { text: 'Пройди первый акт', check: (m) => m.bestAct >= 1 },
+  },
+  {
+    id: 'violet', name: 'Фиолетовая', color: '#57286b', desc: 'Начинаешь с талисманом «Переводной».',
+    unlock: { text: 'Выиграй 15 партий', check: (m) => m.gamesWon >= 15 },
+  },
+  {
+    id: 'black', name: 'Чёрная', color: '#1c1c22', desc: 'Сразу «Двойной козырь», но сердец всего два.',
+    unlock: { text: 'Пройди весь забег', check: (m) => m.runsWon >= 1 },
+  },
+];
+
+const talismanById = (id) => TALISMANS.find((t) => t.id === id);
+const trickById = (id) => TRICKS.find((t) => t.id === id);
+
+// ===== Забег: сохранения, правила стола, награды, барахолка =====
+
+const SAVE_KEY = 'kozyr-v-rukave-1';
+
+// Площадка (сейчас — браузер). Для Яндекс Игр сюда подключается SDK: облачные сохранения,
+// LoadingAPI.ready(), gameplayStart/Stop и реклама между партиями.
+const Platform = {
+  read() {
+    try { const raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+  },
+  write(data) {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch (e) { /* хранилище недоступно — играем без сохранений */ }
+  },
+  ready() {},
+  gameplayStart() {},
+  gameplayStop() {},
+};
+
+const Store = {
+  data: null,
+  fresh() {
+    return {
+      meta: { gamesWon: 0, gamesPlayed: 0, runsWon: 0, runsPlayed: 0, bestAct: 0 },
+      settings: { sound: true, fast: false },
+      back: 'red',
+      run: null,
+    };
+  },
+  load(hot) {
+    const d = (hot && hot.save) || Platform.read();
+    const f = this.fresh();
+    this.data = d && typeof d === 'object'
+      ? { ...f, ...d, meta: { ...f.meta, ...(d.meta || {}) }, settings: { ...f.settings, ...(d.settings || {}) } }
+      : f;
+  },
+  save() { Platform.write(this.data); },
+};
+
+function newRun(backId) {
+  const run = {
+    back: backId,
+    hearts: 3,
+    maxHearts: 3,
+    coins: 4,
+    table: 0,
+    talismans: [],
+    talismanSlots: 5,
+    tricks: [],
+    trickSlots: 2,
+    armorActs: [],
+    shop: null,
+    stats: { won: 0, lost: 0, draws: 0, coins: 0 },
+    seed: (Date.now() ^ Math.floor(Math.random() * 1e9)) >>> 0,
+  };
+  if (backId === 'blue') {
+    run.trickSlots = 3;
+    run.tricks.push(TRICKS[Math.floor(Math.random() * TRICKS.length)].id);
+  }
+  if (backId === 'violet') run.talismans.push('perevod');
+  if (backId === 'black') { run.talismans.push('dvoynoy'); run.hearts = run.maxHearts = 2; }
+  return run;
+}
+
+const TOTAL_TABLES = ACTS.length * 3;
+
+function tableInfo(index) {
+  const act = Math.floor(index / 3);
+  return { act, pos: index % 3, actInfo: ACTS[act], opp: ACTS[act].tables[index % 3] };
+}
+
+function buildRules(run, opp) {
+  const r = defaultRules();
+  for (const id of run.talismans) {
+    const t = talismanById(id);
+    if (t && t.rules) t.rules(r);
+  }
+  if (opp.rule && opp.rule.rules) opp.rule.rules(r);
+  r.handSize = r.handSize.map((h) => Math.max(3, h));
+  return r;
+}
+
+function weightedPick(arr, weight, rng) {
+  const total = arr.reduce((s, a) => s + weight(a), 0);
+  let x = rng() * total;
+  for (const a of arr) { x -= weight(a); if (x <= 0) return a; }
+  return arr[arr.length - 1];
+}
+
+function rollShop(run, rng = Math.random) {
+  const act = Math.min(2, Math.floor(run.table / 3));
+  const owned = new Set(run.talismans);
+  const weight = (t) => RARITY[t.rarity].weight * (t.rarity >= 3 ? 1 + act * 0.9 : 1);
+  const offers = [];
+  for (let i = 0; i < 3; i++) {
+    const pool = TALISMANS.filter((t) => !owned.has(t.id) && !offers.some((o) => o.id === t.id));
+    if (!pool.length) break;
+    offers.push({ kind: 'talisman', id: weightedPick(pool, weight, rng).id, sold: false });
+  }
+  const tpool = TRICKS.slice();
+  for (let i = 0; i < 2; i++) {
+    const t = tpool.splice(Math.floor(rng() * tpool.length), 1)[0];
+    offers.push({ kind: 'trick', id: t.id, sold: false });
+  }
+  return offers;
+}
+
+const priceOf = (offer) => (offer.kind === 'talisman' ? talismanById(offer.id) : trickById(offer.id)).price;
+const sellPrice = (id) => Math.max(1, Math.floor(talismanById(id).price / 2));
+
+// Одна партия за столом: движок + талисманы + особые правила соперника.
+class Match {
+  constructor(run, opp, seed) {
+    this.run = run;
+    this.opp = opp;
+    this.rng = mulberry32(seed);
+    this.rules = buildRules(run, opp);
+    this.g = new DurakGame(this.rules, this.rng);
+    this.earned = [];
+    this.usedActive = new Set();
+    this.peekBout = -1;
+    this.listener = null;
+    this.g.on((type, ev) => this.onGameEvent(type, ev));
+  }
+
+  talismans() { return this.run.talismans.map(talismanById).filter(Boolean); }
+  has(id) { return this.run.talismans.includes(id); }
+  emit(type, data) { if (this.listener) this.listener(type, data || {}); }
+
+  fx(source) {
+    return {
+      run: this.run,
+      won: this.isWin(),
+      earn: (v, label) => {
+        if (v <= 0) return;
+        this.earned.push({ v, label });
+        this.emit('earn', { v, label, source });
+      },
+      note: (text) => this.emit('note', { text, source }),
+      peek: () => { this.peekBout = this.g.boutNo; this.emit('peek'); },
+      heal: (n) => { this.run.hearts = Math.min(this.run.maxHearts, this.run.hearts + n); this.emit('heal', { n }); },
+    };
+  }
+
+  begin() {
+    this.g.setup();
+    for (const t of this.talismans()) if (t.deal) t.deal(this.fx(t.id), this.g);
+    if (this.opp.rule && this.opp.rule.deal) this.opp.rule.deal(this.g);
+    this.g.start();
+  }
+
+  onGameEvent(type, ev) {
+    for (const t of this.talismans()) {
+      const h = t.on && t.on[type];
+      if (h) h(this.fx(t.id), ev, this.g);
+    }
+    this.emit(type, ev);
+  }
+
+  isWin() {
+    const r = this.g.result;
+    return r === 'win' || (r === 'draw' && this.has('mirovaya'));
+  }
+
+  outcome() {
+    if (this.isWin()) return 'win';
+    return this.g.result === 'draw' ? 'draw' : 'lose';
+  }
+
+  peeking() { return this.peekBout === this.g.boutNo; }
+
+  canUseActive(id) {
+    const t = talismanById(id);
+    return !!(t && t.active && this.has(id) && !this.usedActive.has(id) && !this.g.over && this.g.actor() === 0 && t.canUse(this.g));
+  }
+
+  useActive(id) {
+    if (!this.canUseActive(id)) return false;
+    this.usedActive.add(id);
+    talismanById(id).use(this.fx(id), this.g);
+    this.emit('changed');
+    return true;
+  }
+
+  canUseTrick(id, card) {
+    const t = trickById(id);
+    if (!t) return false;
+    if (t.anytime) return t.can(this.g, this.run);
+    if (this.g.over || this.g.actor() !== 0) return false;
+    if (t.can && !t.can(this.g, this.run)) return false;
+    if (card) return !t.canCard || t.canCard(this.g, card);
+    return true;
+  }
+
+  useTrick(index, card) {
+    const id = this.run.tricks[index];
+    const t = trickById(id);
+    if (!t || !this.canUseTrick(id, card)) return false;
+    if (t.target === 'card' && !card) return false;
+    this.run.tricks.splice(index, 1);
+    t.use(this.fx(id), this.g, card);
+    this.emit('changed');
+    return true;
+  }
+
+  settle() {
+    const lines = [];
+    const out = this.outcome();
+    if (out === 'win') {
+      lines.push({ v: this.opp.reward, label: `Победа над: ${this.opp.name}` });
+      if (this.g.hands[1].some((c) => c.r === 6)) lines.push({ v: 2, label: 'Погоны! Дурак остался с шестёркой' });
+    }
+    const merged = new Map();
+    for (const e of this.earned) merged.set(e.label, (merged.get(e.label) || 0) + e.v);
+    for (const [label, v] of merged) lines.push({ v, label });
+    const before = this.earned.length;
+    for (const t of this.talismans()) {
+      const h = t.on && t.on.end;
+      if (h) h(this.fx(t.id), this.g);
+    }
+    for (const e of this.earned.slice(before)) lines.push(e);
+    return { out, lines, total: lines.reduce((s, l) => s + l.v, 0) };
+  }
+}
+
+// ===== Интерфейс =====
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+function h(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const pickOne = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
+const COIN = '<i class="coin" aria-hidden="true"></i>';
+function plural(n, one, few, many) {
+  const a = Math.abs(n) % 100;
+  const b = a % 10;
+  if (a > 10 && a < 20) return many;
+  if (b === 1) return one;
+  if (b >= 2 && b <= 4) return few;
+  return many;
+}
+const cardsWord = (n) => `${n} ${plural(n, 'карта', 'карты', 'карт')}`;
+const reducedMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- звук ----------
+const Sfx = {
+  ctx: null,
+  unlock() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) this.ctx = new AC();
+    } catch (e) { this.ctx = null; }
+  },
+  env(node, gain, dur, when) {
+    const t = this.ctx.currentTime + when;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    node.connect(g);
+    g.connect(this.ctx.destination);
+    return t;
+  },
+  noise(dur, freq, q, gain, type = 'bandpass', when = 0) {
+    const len = Math.max(1, Math.floor(this.ctx.sampleRate * dur));
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const f = this.ctx.createBiquadFilter();
+    f.type = type;
+    f.frequency.value = freq;
+    f.Q.value = q;
+    src.connect(f);
+    const t = this.env(f, gain, dur, when);
+    src.start(t);
+    src.stop(t + dur + 0.02);
+  },
+  tone(freq, dur, type, gain, when = 0, slideTo = null) {
+    const o = this.ctx.createOscillator();
+    o.type = type;
+    const t = this.env(o, gain, dur, when);
+    o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    o.start(t);
+    o.stop(t + dur + 0.02);
+  },
+  play(name) {
+    if (!Store.data.settings.sound || !this.ctx) return;
+    try {
+      switch (name) {
+        case 'card': this.noise(0.07, 2300, 0.9, 0.32); this.tone(190, 0.05, 'sine', 0.1); break;
+        case 'draw': this.noise(0.05, 4200, 0.7, 0.1, 'highpass'); break;
+        case 'bito': this.noise(0.24, 900, 0.6, 0.16); break;
+        case 'take': this.tone(150, 0.2, 'sine', 0.22, 0, 70); this.noise(0.12, 600, 0.8, 0.12); break;
+        case 'coin': this.tone(1320, 0.09, 'triangle', 0.11); this.tone(1760, 0.16, 'triangle', 0.09, 0.06); break;
+        case 'win': [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.24, 'triangle', 0.13, i * 0.09)); break;
+        case 'lose': [392, 330, 262].forEach((f, i) => this.tone(f, 0.32, 'sawtooth', 0.05, i * 0.15)); break;
+        case 'click': this.tone(880, 0.03, 'square', 0.035); break;
+        case 'nope': this.tone(170, 0.12, 'square', 0.045); break;
+        case 'buy': this.tone(988, 0.08, 'triangle', 0.12); this.tone(1319, 0.15, 'triangle', 0.11, 0.07); break;
+        case 'magic': [660, 880, 1175].forEach((f, i) => this.tone(f, 0.18, 'sine', 0.08, i * 0.05)); break;
+        default: break;
+      }
+    } catch (e) { /* звук не критичен */ }
+  },
+};
+
+// ---------- эффекты ----------
+const Fx = {
+  float(x, y, text, cls = '') {
+    const e = h('div', `float ${cls}`, text);
+    e.style.left = `${x}px`;
+    e.style.top = `${y}px`;
+    $('#fx').appendChild(e);
+    setTimeout(() => e.remove(), 1400);
+  },
+  floatAt(elem, text, cls) {
+    if (!elem) return;
+    const r = elem.getBoundingClientRect();
+    this.float(r.left + r.width / 2, r.top + r.height / 2, text, cls);
+  },
+  banner(text) {
+    const e = h('div', 'banner', esc(text));
+    $('#fx').appendChild(e);
+    setTimeout(() => e.remove(), 1150);
+  },
+  wiggle(elem) {
+    if (!elem) return;
+    elem.classList.remove('fire');
+    void elem.offsetWidth;
+    elem.classList.add('fire');
+  },
+};
+
+// ---------- рисунок карты ----------
+const PIPS = {
+  6: [[30, 20], [70, 20], [30, 50], [70, 50], [30, 80], [70, 80]],
+  7: [[30, 20], [70, 20], [50, 35], [30, 50], [70, 50], [30, 80], [70, 80]],
+  8: [[30, 20], [70, 20], [50, 35], [30, 50], [70, 50], [50, 65], [30, 80], [70, 80]],
+  9: [[30, 18], [70, 18], [30, 39], [70, 39], [50, 50], [30, 61], [70, 61], [30, 82], [70, 82]],
+  10: [[30, 18], [70, 18], [50, 29], [30, 39], [70, 39], [30, 61], [70, 61], [50, 71], [30, 82], [70, 82]],
+};
+
+function faceHTML(c) {
+  const suit = SUITS[c.s];
+  const rank = RANK_LABEL[c.r];
+  let center;
+  if (c.r <= 10) {
+    center = `<div class="pips">${PIPS[c.r].map(([x, y]) => `<span class="pip${y > 55 ? ' flip' : ''}" style="left:${x}%;top:${y}%">${suit}</span>`).join('')}</div>`;
+  } else if (c.r === 14) {
+    center = `<div class="ace"><span>${suit}</span></div>`;
+  } else {
+    center = `<div class="court" data-s="${suit}"><b>${rank}</b><i>${suit}</i></div>`;
+  }
+  let badges = '';
+  if (c.wild) badges += '<span class="badge wild">★</span>';
+  if (c.boosted) badges += '<span class="badge">↑</span>';
+  if (c.painted) badges += '<span class="badge">✎</span>';
+  return `<div class="corner tl"><b>${rank}</b><i>${suit}</i></div>${center}<div class="corner br"><b>${rank}</b><i>${suit}</i></div>${badges}`;
+}
+
+function cardEl(c, faceUp = true) {
+  const e = h('div', `card${isRed(c.s) ? ' red' : ''}${faceUp ? '' : ' down'}`);
+  e.innerHTML = `<div class="cin"><div class="front">${faceHTML(c)}</div><div class="back"></div></div>`;
+  return e;
+}
+
+// Порядок в руке: масти чередуются по цвету, козыри — справа.
+const SUIT_ORDER = [0, 2, 1, 3];
+function sortHand(g, cards) {
+  return cards.slice().sort((a, b) => {
+    const ta = g.isTrump(a, 0) ? 1 : 0;
+    const tb = g.isTrump(b, 0) ? 1 : 0;
+    if (ta !== tb) return ta - tb;
+    if (ta && tb) return g.power(a) - g.power(b) || SUIT_ORDER.indexOf(a.s) - SUIT_ORDER.indexOf(b.s);
+    if (a.s !== b.s) return SUIT_ORDER.indexOf(a.s) - SUIT_ORDER.indexOf(b.s);
+    return a.r - b.r;
+  });
+}
+
+// ---------- стол ----------
+const Board = {
+  root: null,
+  els: new Map(),
+  L: null,
+  match: null,
+  bubbleTimer: null,
+
+  init() {
+    this.root = $('#board');
+    this.root.addEventListener('click', (e) => {
+      const choice = e.target.closest('.choice button');
+      if (choice) return;
+      const c = e.target.closest('.card');
+      if (c) Play.cardClick(Number(c.dataset.id));
+      else Play.backgroundClick();
+    });
+    this.root.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('card')) {
+        e.preventDefault();
+        e.stopPropagation();
+        Play.cardClick(Number(e.target.dataset.id));
+      }
+    });
+  },
+
+  reset(match) {
+    for (const e of this.els.values()) e.remove();
+    this.els.clear();
+    $$('.choice, .bubble', this.root).forEach((e) => e.remove());
+    this.match = match;
+    const opp = match.opp;
+    $('#opp').innerHTML = `
+      <div class="portrait${opp.boss ? ' boss' : ''}">${opp.icon}</div>
+      <div>
+        <div class="opp-name">${esc(opp.name)}</div>
+        <div class="opp-rule">${opp.rule ? `<b>Правило:</b> ${esc(opp.rule.text)}` : esc(opp.title)}</div>
+      </div>`;
+  },
+
+  layout() {
+    const r = this.root;
+    const W = r.clientWidth;
+    const H = r.clientHeight;
+    if (!W || !H) return;
+    const portrait = W < 720;
+    let cw = portrait ? Math.min(W / 4.7, (H - 30) / 7.3) : Math.min(W / 8.9, (H - 20) / 5.8);
+    cw = Math.round(Math.max(42, Math.min(cw, 120)));
+    const ch = Math.round(cw * 1.4);
+    r.style.setProperty('--cw', `${cw}px`);
+    r.style.setProperty('--ch', `${ch}px`);
+    r.classList.toggle('narrow', portrait);
+
+    const oppS = portrait ? 0.56 : 0.64;
+    const oppPanelH = portrait ? 52 : 0;
+    const oppY = oppPanelH + 6 + (ch * oppS) / 2;
+    const handY = H - ch / 2 - (portrait ? 10 : 16);
+    const hudH = portrait ? 48 : 54;
+    const hudY = handY - ch / 2 - hudH / 2 - 8;
+    const sideS = portrait ? 0.62 : 0.86;
+    const scw = cw * sideS;
+    const sch = ch * sideS;
+    const tableTop = oppY + (ch * oppS) / 2 + 12;
+    const tableBot = hudY - hudH / 2 - 6;
+    const tableY = (tableTop + tableBot) / 2;
+    const deckX = scw / 2 + 2;
+    const bitoX = W - scw / 2 - 2;
+    const left = deckX + scw / 2 + sch * 0.3 + 8;
+    const right = bitoX - scw / 2 - 8;
+    const tw = right - left;
+    let cols = portrait ? (tw / 3 >= cw * 1.1 ? 3 : 2) : (tw >= cw * 1.24 * 6 * 0.92 ? 6 : 3);
+    const pairW = Math.min(cw * 1.24, tw / cols);
+    const pairH = ch * 1.18;
+    this.L = { W, H, cw, ch, portrait, oppS, oppY, handY, hudY, hudH, sideS, scw, sch, tableY, deckX, bitoX, cx: (left + right) / 2, cols, pairW, pairH };
+
+    const dp = $('#deck-pile');
+    dp.style.transform = `translate(${deckX - cw / 2}px, ${tableY - ch / 2}px) scale(${sideS})`;
+    const bp = $('#bito-pile');
+    bp.style.transform = `translate(${bitoX - cw / 2}px, ${tableY - ch / 2}px) scale(${sideS})`;
+    const chip = $('#trump-chip');
+    chip.style.left = `${deckX + scw * 0.2}px`;
+    chip.style.top = `${tableY + sch / 2 + (portrait ? 24 : 34)}px`;
+    const hud = $('#hud');
+    hud.style.top = `${hudY - hudH / 2}px`;
+    hud.style.height = `${hudH}px`;
+    hud.style.justifyContent = portrait ? 'space-between' : 'center';
+  },
+
+  tableSlot(i, k) {
+    const L = this.L;
+    const cols = L.cols;
+    const rows = Math.ceil(k / cols);
+    const row = Math.floor(i / cols);
+    const col = i % cols;
+    const inRow = Math.min(cols, k - row * cols);
+    return {
+      x: L.cx + (col - (inRow - 1) / 2) * L.pairW - L.cw * 0.08,
+      y: L.tableY + (row - (rows - 1) / 2) * L.pairH - L.ch * 0.06,
+    };
+  },
+
+  jitter(id) { return (((id * 37) % 7) - 3) * 0.8; },
+
+  targets() {
+    const m = this.match;
+    const g = m.g;
+    const L = this.L;
+    const T = new Map();
+    const glaz = m.has('glaz');
+
+    // колода и открытый козырь
+    if (g.deck.length) {
+      const tc = g.deck[0];
+      T.set(tc.id, { x: L.deckX + L.scw * 0.45, y: L.tableY, rot: 90, s: L.sideS, z: 1, up: true });
+      if (g.deck.length > 1) {
+        const top = g.deck[g.deck.length - 1];
+        T.set(top.id, { x: L.deckX, y: L.tableY, rot: -2, s: L.sideS, z: 3, up: glaz });
+      }
+    }
+
+    // рука соперника
+    const oh = g.hands[1];
+    const ow = L.cw * L.oppS;
+    const oppW = L.portrait ? L.W - 8 : Math.max(L.cw * 2, L.W - 600);
+    const on = oh.length;
+    const osp = on > 1 ? Math.min(ow * 0.62, (oppW - ow) / (on - 1)) : 0;
+    const ox0 = L.W / 2 - (ow + osp * (on - 1)) / 2 + ow / 2;
+    const peek = m.peeking() || g.over;
+    const mem = m.has('pamyat');
+    oh.forEach((c, i) => {
+      T.set(c.id, {
+        x: ox0 + i * osp, y: L.oppY, rot: (i - (on - 1) / 2) * -1.1, s: L.oppS, z: 20 + i,
+        up: peek || (mem && g.known[1].has(c.id)),
+      });
+    });
+
+    // стол
+    const k = g.table.length;
+    g.table.forEach((e, i) => {
+      const p = this.tableSlot(i, k);
+      T.set(e.a.id, { x: p.x, y: p.y, rot: this.jitter(e.a.id), s: 1, z: 40 + i * 2, up: true, cls: e.d ? '' : 'open' });
+      if (e.d) T.set(e.d.id, { x: p.x + L.cw * 0.18, y: p.y + L.ch * 0.15, rot: 8 + this.jitter(e.d.id), s: 1, z: 41 + i * 2, up: true });
+    });
+
+    // своя рука
+    const ph = sortHand(g, g.hands[0]);
+    const n = ph.length;
+    const availW = L.portrait ? L.W - 4 : Math.min(L.W - 2 * L.cw, L.cw * 11.5);
+    const sp = n > 1 ? Math.min(L.cw * 0.8, (availW - L.cw) / (n - 1)) : 0;
+    const x0 = L.W / 2 - (L.cw + sp * (n - 1)) / 2 + L.cw / 2;
+    const mid = (n - 1) / 2;
+    ph.forEach((c, i) => {
+      const off = mid > 0 ? (i - mid) / mid : 0;
+      T.set(c.id, {
+        x: x0 + i * sp,
+        y: L.handY + off * off * L.ch * 0.05,
+        rot: (i - mid) * Math.min(3, 24 / Math.max(n, 1)),
+        s: 1, z: 60 + i, up: true, mine: true,
+      });
+    });
+    return T;
+  },
+
+  transform(t) {
+    const L = this.L;
+    return `translate(${t.x - L.cw / 2}px, ${t.y - L.ch / 2}px) rotate(${t.rot || 0}deg) scale(${t.s || 1})`;
+  },
+
+  render(opts = {}) {
+    const m = this.match;
+    if (!m || !this.L) return;
+    const g = m.g;
+    const L = this.L;
+    const T = this.targets();
+    const myTurn = g.actor() === 0 && !Play.busy && !g.over;
+
+    // что сейчас можно сыграть
+    const playable = new Set();
+    if (myTurn) {
+      if (UI.targeting) {
+        for (const c of g.hands[0]) if (m.canUseTrick(UI.targeting.id, c)) playable.add(c.id);
+      } else if (g.attacker === 0) {
+        for (const c of g.legalAttacks(0)) playable.add(c.id);
+      } else {
+        for (const c of g.hands[0]) if (g.defendTargets(0, c).length || g.canTransferWith(0, c)) playable.add(c.id);
+      }
+    }
+    const tgt = new Set();
+    if (UI.pendingDefend != null) {
+      const card = g.hands[0].find((c) => c.id === UI.pendingDefend);
+      if (card) for (const i of g.defendTargets(0, card)) tgt.add(g.table[i].a.id);
+    }
+
+    let dealIndex = 0;
+    for (const [id, t] of T) {
+      const c = g.cards.get(id);
+      let e = this.els.get(id);
+      const fresh = !e;
+      if (fresh) {
+        e = h('div', 'card down');
+        e.dataset.id = id;
+        e.innerHTML = '<div class="cin"><div class="front"></div><div class="back"></div></div>';
+        this.root.appendChild(e);
+        this.els.set(id, e);
+        const from = { x: L.deckX, y: L.tableY, rot: -2, s: L.sideS };
+        e.style.transition = 'none';
+        e.style.transform = this.transform(from);
+        void e.offsetWidth;
+        e.style.transition = '';
+        if (opts.deal) e.style.transitionDelay = `${dealIndex++ * 45}ms`;
+      } else if (e._leaving) {
+        e._leaving = false;
+        clearTimeout(e._leaveTimer);
+      }
+      const sig = `${c.r}|${c.s}|${c.wild}|${c.boosted}|${c.painted}`;
+      if (e._sig !== sig) {
+        e._sig = sig;
+        e.querySelector('.front').innerHTML = faceHTML(c);
+        e.classList.toggle('red', isRed(c.s));
+        e.classList.toggle('wild', !!c.wild);
+      }
+      e.classList.toggle('down', !t.up);
+      e.classList.toggle('mine', !!t.mine);
+      e.classList.toggle('trump', !!t.mine && g.isTrump(c, 0));
+      e.classList.toggle('playable', playable.has(id) || tgt.has(id));
+      e.classList.toggle('dim', !!t.mine && myTurn && !playable.has(id));
+      e.classList.toggle('sel', UI.pendingDefend === id || (UI.choiceFor === id));
+      e.classList.toggle('tgt', tgt.has(id));
+      e.classList.toggle('open', t.cls === 'open');
+      if (t.mine && playable.has(id)) e.tabIndex = 0; else e.removeAttribute('tabindex');
+      const instant = opts.instant && !fresh;
+      if (instant) e.style.transition = 'none';
+      e.style.zIndex = t.z;
+      e.style.transform = this.transform(t);
+      if (instant) {
+        void e.offsetWidth;
+        e.style.transition = '';
+      }
+    }
+    if (opts.deal) setTimeout(() => { for (const e of this.els.values()) e.style.transitionDelay = ''; }, 1400);
+
+    // карты, ушедшие со стола
+    for (const [id, e] of this.els) {
+      if (T.has(id) || e._leaving) continue;
+      e._leaving = true;
+      const inDiscard = g.discard.some((c) => c.id === id);
+      const inDeck = g.deck.some((c) => c.id === id);
+      const to = inDiscard
+        ? { x: L.bitoX, y: L.tableY, rot: this.jitter(id) * 4, s: L.sideS, z: 35 }
+        : inDeck ? { x: L.deckX, y: L.tableY, rot: -2, s: L.sideS, z: 2 } : { x: L.W / 2, y: -L.ch, s: 1, z: 1 };
+      e.classList.add('down');
+      e.classList.remove('mine', 'playable', 'dim', 'sel', 'tgt', 'trump', 'open');
+      e.style.zIndex = to.z;
+      e.style.transform = this.transform(to);
+      e._leaveTimer = setTimeout(() => {
+        if (!e._leaving) return;
+        e.remove();
+        this.els.delete(id);
+        this.renderPiles();
+      }, 480);
+    }
+    this.renderPiles();
+  },
+
+  renderPiles() {
+    const g = this.match.g;
+    const dp = $('#deck-pile');
+    dp.hidden = g.deck.length < 2;
+    $('.stack', dp).style.visibility = g.deck.length > 2 ? 'visible' : 'hidden';
+    $('.count', dp).textContent = g.deck.length ? `${g.deck.length}` : '';
+    const leaving = [...this.els.values()].filter((e) => e._leaving).length;
+    const bp = $('#bito-pile');
+    bp.hidden = g.discard.length - leaving <= 0;
+    $('.count', bp).textContent = 'бито';
+    const chip = $('#trump-chip');
+    const red = isRed(g.trumpSuit);
+    chip.innerHTML = `козырь <span class="s${red ? ' red' : ''}">${SUITS[g.trumpSuit]}</span>`;
+  },
+
+  say(text) {
+    if (!text) return;
+    $$('.bubble', this.root).forEach((b) => b.remove());
+    clearTimeout(this.bubbleTimer);
+    const b = h('div', 'bubble', esc(text));
+    const opp = $('#opp');
+    const L = this.L;
+    if (L && L.portrait) {
+      b.style.left = `${Math.min(opp.offsetWidth + 14, L.W - 200)}px`;
+      b.style.top = '6px';
+    } else {
+      b.style.left = `${opp.offsetWidth + 16}px`;
+      b.style.top = '10px';
+    }
+    this.root.appendChild(b);
+    this.bubbleTimer = setTimeout(() => b.remove(), 2000);
+  },
+
+  showChoice(card, onBeat, onTransfer) {
+    this.hideChoice();
+    const t = this.targets().get(card.id);
+    if (!t) return;
+    const box = h('div', 'choice');
+    box.innerHTML = '<button class="btn small" data-a="beat">Побить</button><button class="btn small ghost" data-a="tr">Перевести</button>';
+    box.style.left = `${Math.max(60, Math.min(this.L.W - 60, t.x))}px`;
+    box.style.top = `${t.y - this.L.ch * 0.12}px`;
+    box.addEventListener('click', (ev) => {
+      const a = ev.target.closest('button');
+      if (!a) return;
+      ev.stopPropagation();
+      this.hideChoice();
+      if (a.dataset.a === 'beat') onBeat(); else onTransfer();
+    });
+    this.root.appendChild(box);
+    UI.choiceFor = card.id;
+  },
+
+  hideChoice() {
+    $$('.choice', this.root).forEach((e) => e.remove());
+    UI.choiceFor = null;
+  },
+};
+
+// ---------- верхняя панель ----------
+const HUD = {
+  render() {
+    const top = $('#topbar');
+    const run = App.run;
+    if (!run || App.screen === 'menu' || App.screen === 'end') { top.hidden = true; return; }
+    top.hidden = false;
+    const info = tableInfo(Math.min(run.table, TOTAL_TABLES - 1));
+    const m = App.screen === 'game' ? App.match : null;
+    const tokens = run.talismans.map((id) => {
+      const t = talismanById(id);
+      const ready = m && t.active && m.canUseActive(id);
+      const spent = m && t.active && m.usedActive.has(id);
+      return `<button class="token q${t.rarity}${spent ? ' spent' : ''}" data-kind="t" data-id="${id}" aria-label="${esc(t.name)}">${t.icon}${ready ? '<span class="dot"></span>' : ''}</button>`;
+    });
+    for (let i = run.talismans.length; i < run.talismanSlots; i++) tokens.push('<span class="slot"></span>');
+    const tricks = run.tricks.map((id, i) => {
+      const t = trickById(id);
+      const armed = UI.targeting && UI.targeting.index === i;
+      return `<button class="trick${armed ? ' armed' : ''}" data-kind="k" data-index="${i}" aria-label="${esc(t.name)}">${t.icon}</button>`;
+    });
+    for (let i = run.tricks.length; i < run.trickSlots; i++) tricks.push('<span class="trick-slot"></span>');
+    const html = `
+      <div class="hud-group">
+        <div class="hearts" aria-label="Сердца: ${run.hearts}">${'♥'.repeat(Math.max(0, run.hearts))}<span class="lost">${'♥'.repeat(Math.max(0, run.maxHearts - run.hearts))}</span></div>
+        <div class="coins" aria-label="Монеты">${run.coins}${COIN}</div>
+        <div class="progress">Акт ${ROMAN[info.act]} · <b>${esc(info.actInfo.name)}</b> · стол ${info.pos + 1}/3</div>
+      </div>
+      <div class="trays">
+        <div class="tray"><span class="tray-label">Талисманы</span>${tokens.join('')}</div>
+        <div class="tray"><span class="tray-label">Фокусы</span>${tricks.join('')}</div>
+        <button class="icon-btn" id="btn-pause" aria-label="Меню">☰</button>
+      </div>`;
+    // Перерисовываем только при изменениях, иначе обрываются анимации жетонов.
+    if (top._html !== html) {
+      top.innerHTML = html;
+      top._html = html;
+    }
+  },
+  token(id) { return $(`#topbar .token[data-id="${id}"]`); },
+  coins() { return $('#topbar .coins'); },
+};
+
+// ---------- подсказка к талисманам и фокусам ----------
+const Tip = {
+  anchor: null,
+  open(anchor) {
+    if (this.anchor === anchor) { this.close(); return; }
+    this.anchor = anchor;
+    const run = App.run;
+    const tip = $('#tip');
+    const m = App.screen === 'game' ? App.match : null;
+    let html = '';
+    const acts = [];
+    if (anchor.dataset.kind === 't') {
+      const t = talismanById(anchor.dataset.id);
+      html = `<h4>${t.icon} ${esc(t.name)}</h4><div class="rar">Талисман · ${RARITY[t.rarity].name}${t.active ? ' · раз за партию' : ''}</div><p>${esc(t.desc)}</p>`;
+      if (t.active && m) {
+        if (m.usedActive.has(t.id)) html += '<p class="muted">Уже использован в этой партии.</p>';
+        else if (m.canUseActive(t.id)) acts.push(['Применить', () => { m.useActive(t.id); Sfx.play('magic'); Play.step(); }]);
+        else html += '<p class="muted">Сейчас применить нельзя.</p>';
+      }
+      if (App.screen === 'shop') acts.push([`Продать за ${sellPrice(t.id)}${COIN}`, () => App.sell(t.id)]);
+    } else {
+      const index = Number(anchor.dataset.index);
+      const t = trickById(run.tricks[index]);
+      html = `<h4>${t.icon} ${esc(t.name)}</h4><div class="rar">Фокус · одноразовый</div><p>${esc(t.desc)}</p>`;
+      const usable = t.anytime ? t.can(null, run) : (m && m.canUseTrick(t.id));
+      if (usable) acts.push([t.target === 'card' ? 'Выбрать карту' : 'Использовать', () => App.useTrick(index)]);
+      else if (!t.anytime && !m) html += '<p class="muted">Используется во время партии, в свой ход.</p>';
+      else html += '<p class="muted">Сейчас использовать нельзя.</p>';
+    }
+    tip.innerHTML = html + (acts.length ? '<div class="tip-actions"></div>' : '');
+    const row = $('.tip-actions', tip);
+    for (const [label, fn] of acts) {
+      const b = h('button', 'btn small', label);
+      b.addEventListener('click', (e) => { e.stopPropagation(); this.close(); fn(); });
+      row.appendChild(b);
+    }
+    tip.hidden = false;
+    const r = anchor.getBoundingClientRect();
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    let x = Math.min(window.innerWidth - tw - 16, Math.max(16, r.left + r.width / 2 - tw / 2));
+    let y = r.bottom + 10;
+    if (y + th > window.innerHeight - 10) y = Math.max(10, r.top - th - 10);
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+  },
+  close() {
+    this.anchor = null;
+    $('#tip').hidden = true;
+  },
+};
+
+// ---------- состояние выбора ----------
+const UI = {
+  pendingDefend: null, // карта, для которой выбираем, что бить
+  targeting: null,     // { index, id } — фокус ждёт выбора карты
+  choiceFor: null,
+};
+
+// ---------- ход партии ----------
+const Play = {
+  match: null,
+  busy: false,
+  timer: null,
+  autoTimer: null,
+  slowNext: false,
+  chasedThisBout: false,
+
+  pace() { return Store.data.settings.fast ? 330 : 640; },
+
+  start(match) {
+    this.stop();
+    this.match = match;
+    this.busy = false;
+    UI.pendingDefend = null;
+    UI.targeting = null;
+    Board.render({ deal: true });
+    HUD.render();
+    setTimeout(() => {
+      if (this.match !== match) return;
+      Fx.banner(match.g.attacker === 0 ? 'Твой ход первый' : `Первым ходит: ${match.opp.name}`);
+    }, 500);
+    this.slowNext = true;
+    this.step();
+  },
+
+  stop() {
+    clearTimeout(this.timer);
+    clearTimeout(this.autoTimer);
+    this.match = null;
+    Board.hideChoice();
+  },
+
+  schedule(fn, ms) {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(fn, ms);
+  },
+
+  step() {
+    const m = this.match;
+    if (!m) return;
+    const g = m.g;
+    clearTimeout(this.autoTimer);
+    this.busy = g.over || g.actor() === 1;
+    Board.render();
+    HUD.render();
+    this.updateStatus();
+    if (g.over) {
+      this.schedule(() => App.gameOver(), 1100);
+      return;
+    }
+    if (g.actor() === 1) {
+      const extra = this.slowNext ? 420 : 0;
+      this.slowNext = false;
+      this.schedule(() => this.aiMove(), this.pace() + extra);
+      return;
+    }
+    this.autoMoves();
+  },
+
+  aiMove() {
+    const m = this.match;
+    if (!m || m.g.over) return;
+    const g = m.g;
+    let act = aiDecide(g, 1, m.opp.smart, m.rng);
+    if (!act) act = g.canPass(1) ? { type: 'pass' } : g.canFinishTake(1) ? { type: 'finishTake' } : null;
+    if (!aiApply(g, 1, act)) {
+      const all = aiLegalActions(g, 1);
+      if (all.length) aiApply(g, 1, all[all.length - 1]);
+    }
+    this.step();
+  },
+
+  // Подкинуть нечего — бито / пусть забирает, без лишних кликов.
+  autoMoves() {
+    const g = this.match.g;
+    if (UI.targeting || g.actor() !== 0) return;
+    if (g.legalAttacks(0).length) return;
+    if (g.canFinishTake(0)) {
+      this.autoTimer = setTimeout(() => {
+        if (this.match && g.canFinishTake(0) && !UI.targeting && !g.legalAttacks(0).length) { g.finishTake(0); this.step(); }
+      }, 700);
+    } else if (g.canPass(0)) {
+      this.autoTimer = setTimeout(() => {
+        if (this.match && g.canPass(0) && !UI.targeting && !g.legalAttacks(0).length) { g.pass(0); this.step(); }
+      }, 800);
+    }
+  },
+
+  cardClick(id) {
+    const m = this.match;
+    if (!m) return;
+    const g = m.g;
+    Sfx.unlock();
+    Tip.close();
+    if (g.over || this.busy || g.actor() !== 0) return;
+    const card = g.hands[0].find((c) => c.id === id);
+    Board.hideChoice();
+
+    if (UI.targeting) {
+      if (!card) return;
+      const { index } = UI.targeting;
+      if (m.useTrick(index, card)) {
+        UI.targeting = null;
+        Sfx.play('magic');
+        this.step();
+      } else this.nope(id);
+      return;
+    }
+
+    if (!card) {
+      if (UI.pendingDefend != null) {
+        const idx = g.table.findIndex((e) => e.a.id === id);
+        if (idx >= 0 && g.defend(0, UI.pendingDefend, idx)) {
+          UI.pendingDefend = null;
+          this.step();
+        }
+      }
+      return;
+    }
+
+    UI.pendingDefend = null;
+    if (g.attacker === 0) {
+      if (g.attack(0, id)) this.step(); else this.nope(id);
+      return;
+    }
+    const targets = g.defendTargets(0, card);
+    const canTr = g.canTransferWith(0, card);
+    if (!targets.length && !canTr) { this.nope(id); return; }
+    const beat = () => {
+      if (targets.length === 1) { g.defend(0, id, targets[0]); this.step(); return; }
+      UI.pendingDefend = id;
+      Board.render();
+      this.updateStatus();
+    };
+    const transfer = () => { g.transfer(0, id); this.step(); };
+    if (canTr && targets.length) {
+      Board.showChoice(card, beat, transfer);
+      Board.render();
+      return;
+    }
+    if (canTr) transfer(); else beat();
+  },
+
+  backgroundClick() {
+    if (UI.pendingDefend != null || UI.choiceFor != null) {
+      UI.pendingDefend = null;
+      Board.hideChoice();
+      Board.render();
+      this.updateStatus();
+    }
+    Tip.close();
+  },
+
+  nope(id) {
+    Sfx.play('nope');
+    const e = Board.els.get(id);
+    if (!e) return;
+    e.classList.remove('nope');
+    void e.offsetWidth;
+    e.classList.add('nope');
+    setTimeout(() => e.classList.remove('nope'), 400);
+  },
+
+  mainAction() {
+    const m = this.match;
+    if (!m) return;
+    const g = m.g;
+    Sfx.unlock();
+    if (UI.targeting) { this.cancelTargeting(); return; }
+    if (g.actor() !== 0 || this.busy) return;
+    UI.pendingDefend = null;
+    Board.hideChoice();
+    if (g.canTake(0)) g.take(0);
+    else if (g.canFinishTake(0)) g.finishTake(0);
+    else if (g.canPass(0)) g.pass(0);
+    else return;
+    this.step();
+  },
+
+  cancelTargeting() {
+    UI.targeting = null;
+    this.step();
+  },
+
+  updateStatus() {
+    const m = this.match;
+    if (!m) return;
+    const g = m.g;
+    const st = $('#status');
+    const btn = $('#btn-main');
+    let text = '';
+    let label = '';
+    let pulse = false;
+    const me = g.actor() === 0;
+    if (g.over) {
+      text = '';
+    } else if (UI.targeting) {
+      text = `Фокус «${trickById(UI.targeting.id).name}»: выбери карту в руке.`;
+      label = 'Отмена';
+    } else if (!me) {
+      text = g.taking ? `${m.opp.name} подкидывает вдогонку…` : g.defender === 1 ? `${m.opp.name} думает, чем бить…` : `${m.opp.name} ходит…`;
+    } else if (UI.pendingDefend != null) {
+      text = 'Какую карту бьём? Нажми на неё на столе.';
+    } else if (g.taking) {
+      text = g.legalAttacks(0).length ? 'Соперник берёт. Подкинь вдогонку или нажми «Забирай».' : 'Подкинуть нечего.';
+      label = 'Забирай';
+    } else if (g.defender === 0) {
+      const canBeat = g.hands[0].some((c) => g.defendTargets(0, c).length);
+      const canTr = g.hands[0].some((c) => g.canTransferWith(0, c));
+      text = canBeat || canTr ? `Отбивайся или бери.${canTr ? ' Можно перевести.' : ''}` : 'Нечем бить — придётся взять.';
+      label = 'Беру';
+      pulse = !canBeat && !canTr;
+    } else if (g.table.length === 0) {
+      text = 'Твой ход: ходи любой картой.';
+    } else {
+      text = g.legalAttacks(0).length ? 'Отбился. Подкинь карту того же достоинства или скажи «Бито».' : 'Подкинуть нечего — бито.';
+      label = 'Бито';
+    }
+    st.textContent = text;
+    st.classList.toggle('mine', me);
+    btn.hidden = !label;
+    btn.textContent = label;
+    btn.classList.toggle('pulse', pulse);
+    btn.classList.toggle('ghost', label === 'Отмена');
+  },
+
+  line(kind) {
+    const own = this.match.opp.lines && this.match.opp.lines[kind];
+    if (own && Math.random() < 0.6) return pickOne(own);
+    return pickOne(LINES_COMMON[kind] || ['…']);
+  },
+
+  onEvent(type, ev) {
+    const m = this.match;
+    if (!m) return;
+    switch (type) {
+      case 'attack':
+        Sfx.play('card');
+        if (ev.who === 1 && ev.kind === 'chase' && !this.chasedThisBout) {
+          this.chasedThisBout = true;
+          if (Math.random() < 0.7) Board.say(this.line('chase'));
+        }
+        break;
+      case 'defend':
+        Sfx.play('card');
+        break;
+      case 'transfer':
+        Sfx.play('card');
+        Fx.banner('Переводной!');
+        if (ev.who === 1) Board.say(this.line('transfer'));
+        break;
+      case 'take':
+        if (ev.who === 1) Board.say(this.line('take'));
+        break;
+      case 'took':
+        Sfx.play('take');
+        this.chasedThisBout = false;
+        this.slowNext = true;
+        break;
+      case 'bito':
+        Sfx.play('bito');
+        this.chasedThisBout = false;
+        this.slowNext = true;
+        if (ev.defender === 1 && Math.random() < 0.45) Board.say(this.line('bito'));
+        else if (ev.defender === 0 && ev.attacker === 1 && Math.random() < 0.25) Board.say(this.line('pass'));
+        break;
+      case 'draw':
+        Sfx.play('draw');
+        break;
+      case 'earn':
+        if (m.g.over && !m.settledLive) break;
+        Sfx.play('coin');
+        Fx.wiggle(HUD.token(ev.source));
+        Fx.floatAt(HUD.token(ev.source) || HUD.coins(), `+${ev.v}${COIN}`);
+        break;
+      case 'note':
+        Fx.wiggle(HUD.token(ev.source));
+        Fx.floatAt(HUD.token(ev.source) || $('#status'), ev.text, 'note');
+        break;
+      case 'peek':
+        Fx.banner('Подсмотрел!');
+        break;
+      case 'heal':
+        Fx.floatAt($('#topbar .hearts'), '+1 ♥', 'note');
+        break;
+      case 'over': {
+        const out = m.outcome();
+        if (out === 'win') Board.say(this.line('lose'));
+        else if (out === 'lose') Board.say(this.line('win'));
+        break;
+      }
+      default:
+        break;
+    }
+  },
+};
+
+// ---------- приложение ----------
+const App = {
+  screen: 'menu',
+  run: null,
+  match: null,
+
+  init(hot) {
+    Store.load(hot);
+    this.run = Store.data.run;
+    Board.init();
+    this.bind();
+    this.renderMenu();
+    this.show('menu');
+    Platform.ready();
+    if (window.claude && window.claude.hot && window.claude.hot.snapshot) {
+      try { window.claude.hot.snapshot(() => ({ save: Store.data })); } catch (e) { /* необязательно */ }
+    }
+  },
+
+  bind() {
+    document.addEventListener('pointerdown', () => Sfx.unlock(), { capture: true });
+    $('#btn-main').addEventListener('click', (e) => { e.stopPropagation(); Play.mainAction(); });
+    $('#topbar').addEventListener('click', (e) => {
+      const tok = e.target.closest('.token, .trick');
+      if (tok) { e.stopPropagation(); Sfx.play('click'); Tip.open(tok); return; }
+      if (e.target.closest('#btn-pause')) { Sfx.play('click'); this.pause(); }
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#tip') && !e.target.closest('.token, .trick')) Tip.close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!$('#modal').hidden && this.modalClosable) { this.closeModal(); return; }
+        Tip.close();
+        if (UI.targeting) Play.cancelTargeting(); else Play.backgroundClick();
+      }
+      if ((e.key === ' ' || e.key === 'Enter') && this.screen === 'game' && $('#modal').hidden && !e.target.closest('button, .card')) {
+        e.preventDefault();
+        Play.mainAction();
+      }
+    });
+    let rt = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => {
+        Tip.close();
+        if (this.screen === 'game') { Board.layout(); Board.hideChoice(); Board.render({ instant: true }); }
+      }, 80);
+    });
+  },
+
+  show(name) {
+    this.screen = name;
+    for (const s of $$('.screen')) s.hidden = s.id !== `screen-${name}`;
+    Tip.close();
+    HUD.render();
+    document.documentElement.style.setProperty('--back', this.backColor());
+    if (name !== 'game') Play.stop();
+  },
+
+  backColor() {
+    const id = (this.run && this.run.back) || Store.data.back;
+    return (BACKS.find((b) => b.id === id) || BACKS[0]).color;
+  },
+
+  // ----- меню -----
+  renderMenu() {
+    const d = Store.data;
+    const meta = d.meta;
+    const unlocked = (b) => !b.unlock || b.unlock.check(meta);
+    if (!unlocked(BACKS.find((b) => b.id === d.back) || BACKS[0])) d.back = 'red';
+    const sel = BACKS.find((b) => b.id === d.back) || BACKS[0];
+    const root = $('#screen-menu');
+    root.innerHTML = `
+      <div class="menu">
+        <div class="fan" aria-hidden="true"></div>
+        <h1 class="logo">Козырь в рукаве<span class="logo-sub">дурак-рогалик: девять столов, один шанс</span></h1>
+        <div class="menu-btns">
+          ${this.run ? '<button class="btn big" data-a="continue">Продолжить забег</button>' : ''}
+          <button class="btn ${this.run ? 'ghost' : 'big'}" data-a="new">Новый забег</button>
+          <button class="btn ghost" data-a="rules">Как играть</button>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:10px">Рубашка колоды</div>
+          <div class="backs">${BACKS.map((b) => `
+            <button class="back-opt${b.id === sel.id ? ' on' : ''}${unlocked(b) ? '' : ' locked'}" data-back="${b.id}" style="--bc:${b.color}">
+              <span class="mini"></span>${esc(b.name)}
+            </button>`).join('')}
+          </div>
+        </div>
+        <div class="back-desc" id="back-desc">${esc(sel.desc)}</div>
+        <div class="menu-stats">Выиграно партий: ${meta.gamesWon} · пройдено забегов: ${meta.runsWon}</div>
+        <button class="btn ghost small" data-a="sound">${d.settings.sound ? '🔊 Звук включён' : '🔇 Звук выключен'}</button>
+      </div>`;
+    const fan = $('.fan', root);
+    const fanCards = [{ r: 6, s: 2 }, { r: 11, s: 1 }, { r: 14, s: 0 }, { r: 12, s: 3 }, { r: 13, s: 2 }];
+    fanCards.forEach((c, i) => {
+      const e = cardEl({ ...c, id: -1 - i });
+      const rot = (i - 2) * 11;
+      e.style.transform = `translate(${115 + (i - 2) * 34}px, ${Math.abs(i - 2) * 7 + 12}px) rotate(${rot}deg)`;
+      e.style.zIndex = i;
+      fan.appendChild(e);
+    });
+    root.onclick = (e) => {
+      const b = e.target.closest('[data-a], [data-back]');
+      if (!b) return;
+      Sfx.unlock();
+      Sfx.play('click');
+      if (b.dataset.back) {
+        const back = BACKS.find((x) => x.id === b.dataset.back);
+        if (unlocked(back)) {
+          d.back = back.id;
+          Store.save();
+          this.renderMenu();
+        } else {
+          $('#back-desc').textContent = `Закрыто. ${back.unlock.text}, чтобы открыть: ${back.desc}`;
+        }
+        return;
+      }
+      const a = b.dataset.a;
+      if (a === 'continue') this.resume();
+      if (a === 'new') {
+        if (this.run) {
+          this.confirm('Начать новый забег?', 'Текущий забег пропадёт вместе с монетами и талисманами.', 'Начать заново', () => this.newRun());
+        } else this.newRun();
+      }
+      if (a === 'rules') this.rules();
+      if (a === 'sound') { d.settings.sound = !d.settings.sound; Store.save(); this.renderMenu(); }
+    };
+  },
+
+  newRun() {
+    const d = Store.data;
+    this.run = newRun(d.back);
+    this.run.phase = 'intro';
+    d.run = this.run;
+    d.meta.runsPlayed++;
+    Store.save();
+    this.renderIntro();
+    this.show('intro');
+  },
+
+  resume() {
+    if (!this.run) return;
+    if (this.run.phase === 'shop' && this.run.shop) { this.renderShop(); this.show('shop'); }
+    else { this.renderIntro(); this.show('intro'); }
+  },
+
+  // ----- перед столом -----
+  renderIntro() {
+    const run = this.run;
+    const info = tableInfo(run.table);
+    const opp = info.opp;
+    const stars = Math.max(1, Math.round(opp.smart * 5));
+    const hello = (opp.lines && opp.lines.hello && opp.lines.hello[0]) || 'Ну что, сыграем?';
+    const stops = info.actInfo.tables.map((t, i) => {
+      const cls = i < info.pos ? 'done' : i === info.pos ? 'now' : '';
+      return `${i ? '<div class="link"></div>' : ''}<div class="stop ${cls}"><div class="portrait${t.boss ? ' boss' : ''}">${t.icon}</div><div class="nm">${esc(t.name)}</div><div class="tag">${t.boss ? 'босс' : ''}</div></div>`;
+    }).join('');
+    $('#screen-intro').innerHTML = `
+      <div class="wrap">
+        <div class="act-head">
+          <div class="eyebrow">Акт ${ROMAN[info.act]} из ${ACTS.length}</div>
+          <h1 class="act-title">${esc(info.actInfo.name)}</h1>
+          <div class="act-sub">${esc(info.actInfo.sub)}</div>
+        </div>
+        <div class="path">${stops}</div>
+        <div class="opp-card">
+          <div class="portrait${opp.boss ? ' boss' : ''}">${opp.icon}</div>
+          <div>
+            <h2>${esc(opp.name)}</h2>
+            <div class="ttl">${esc(opp.title)}</div>
+            <div class="say">«${esc(hello)}»</div>
+            <div class="rule-box">${opp.rule ? `<b>Особое правило</b>${esc(opp.rule.text)}` : '<b>Без особых правил</b>Обычный подкидной дурак.'}</div>
+            <div class="meta-line">
+              <span>Награда <b>${opp.reward}${COIN}</b></span>
+              <span>Мастерство <b>${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}</b></span>
+              ${opp.boss ? '<span>За победу над боссом <b>+1 ♥</b></span>' : ''}
+            </div>
+          </div>
+        </div>
+        <div class="center-row">
+          <button class="btn big" data-a="play">Сесть за стол</button>
+        </div>
+      </div>`;
+    $('#screen-intro').onclick = (e) => {
+      const b = e.target.closest('[data-a]');
+      if (!b) return;
+      Sfx.unlock();
+      Sfx.play('click');
+      if (b.dataset.a === 'play') this.startTable();
+    };
+  },
+
+  startTable() {
+    const run = this.run;
+    const info = tableInfo(run.table);
+    run.phase = 'intro';
+    Store.save();
+    const played = run.stats.won + run.stats.lost + run.stats.draws;
+    const seed = (run.seed + run.table * 7919 + played * 104729) >>> 0;
+    this.match = new Match(run, info.opp, seed);
+    this.match.listener = (type, ev) => Play.onEvent(type, ev);
+    this.show('game');
+    Board.reset(this.match);
+    this.match.begin();
+    Board.layout();
+    Play.start(this.match);
+    Platform.gameplayStart();
+  },
+
+  // ----- конец партии -----
+  gameOver() {
+    const m = this.match;
+    if (!m || m.settled) return;
+    m.settled = true;
+    Platform.gameplayStop();
+    const run = this.run;
+    const meta = Store.data.meta;
+    const info = tableInfo(run.table);
+    const res = m.settle();
+    const notes = [];
+    run.coins += res.total;
+    run.stats.coins += res.total;
+    meta.gamesPlayed++;
+    let next;
+    if (res.out === 'win') {
+      meta.gamesWon++;
+      run.stats.won++;
+      if (info.opp.boss) {
+        if (run.hearts < run.maxHearts) { run.hearts++; notes.push({ label: 'Босс повержен', v: '+1 ♥' }); }
+        meta.bestAct = Math.max(meta.bestAct, info.act + 1);
+      }
+      run.table++;
+      if (run.table >= TOTAL_TABLES) next = 'victory';
+      else {
+        run.shop = { offers: rollShop(run), rerolls: 0 };
+        run.phase = 'shop';
+        next = 'shop';
+      }
+    } else if (res.out === 'lose') {
+      run.stats.lost++;
+      if (m.has('zhilet') && !run.armorActs.includes(info.act)) {
+        run.armorActs.push(info.act);
+        notes.push({ label: 'Бронежилет спас сердце', v: '0 ♥', minus: false });
+      } else {
+        run.hearts--;
+        notes.push({ label: 'Проигрыш', v: '−1 ♥', minus: true });
+      }
+      run.phase = 'intro';
+      next = run.hearts <= 0 ? 'defeat' : 'retry';
+    } else {
+      run.stats.draws++;
+      run.phase = 'intro';
+      next = 'retry';
+    }
+    Store.save();
+    HUD.render();
+
+    const g = m.g;
+    let title;
+    let sub;
+    let cls = '';
+    if (res.out === 'win') {
+      title = g.result === 'draw' ? 'Мировая!' : 'Победа!';
+      sub = g.result === 'draw' ? 'Ничья — но по «Мировой» засчитана победа.' : `${info.opp.name} остаётся в дураках: ${cardsWord(g.hands[1].length)} на руках.`;
+      Sfx.play('win');
+    } else if (res.out === 'lose') {
+      title = 'Ты — дурак!';
+      sub = `На руках осталось: ${cardsWord(g.hands[0].length)}.`;
+      cls = 'lose';
+      Sfx.play('lose');
+    } else {
+      title = 'Ничья';
+      sub = 'Вышли одновременно. Переигрываем без потерь.';
+    }
+    const btn = {
+      shop: 'В барахолку',
+      victory: 'Итоги забега',
+      retry: res.out === 'draw' ? 'Переиграть' : 'Ещё раз',
+      defeat: 'Итоги забега',
+    }[next];
+    const rows = res.lines.map((l) => ({ label: l.label, v: `+${l.v}`, coin: true })).concat(notes);
+    this.modal(`
+      <div class="sheet">
+        <h2 class="${cls}">${esc(title)}</h2>
+        <div class="sub">${esc(sub)}</div>
+        <div class="tally"></div>
+        ${res.total ? `<div class="tally-total" hidden><span>Итого</span><span>+${res.total}${COIN}</span></div>` : ''}
+        <div class="sheet-actions"><button class="btn" data-a="next" hidden>${btn}</button></div>
+      </div>`, false);
+    const tally = $('#modal .tally');
+    const step = reducedMotion() ? 0 : 320;
+    rows.forEach((r, i) => {
+      setTimeout(() => {
+        const row = h('div', `tally-row${r.minus ? ' minus' : ''}`, `<span>${esc(r.label)}</span><span class="v">${esc(r.v)}${r.coin ? COIN : ''}</span>`);
+        tally.appendChild(row);
+        if (r.coin) Sfx.play('coin');
+      }, 250 + i * step);
+    });
+    setTimeout(() => {
+      const t = $('#modal .tally-total');
+      if (t) t.hidden = false;
+      const b = $('#modal [data-a="next"]');
+      if (b) { b.hidden = false; b.focus(); }
+    }, 300 + rows.length * step);
+    $('#modal').onclick = (e) => {
+      if (!e.target.closest('[data-a="next"]')) return;
+      Sfx.play('click');
+      this.closeModal();
+      if (next === 'shop') { this.renderShop(); this.show('shop'); }
+      else if (next === 'retry') { this.renderIntro(); this.show('intro'); }
+      else this.endRun(next === 'victory');
+    };
+  },
+
+  // ----- барахолка -----
+  renderShop() {
+    const run = this.run;
+    const shop = run.shop;
+    const rerollCost = 2 + shop.rerolls;
+    const next = tableInfo(run.table);
+    const offerHTML = shop.offers.map((o, i) => {
+      const def = o.kind === 'talisman' ? talismanById(o.id) : trickById(o.id);
+      const price = def.price;
+      const full = o.kind === 'talisman' ? run.talismans.length >= run.talismanSlots : run.tricks.length >= run.trickSlots;
+      const can = !o.sold && run.coins >= price && !full;
+      const icon = o.kind === 'talisman'
+        ? `<span class="token q${def.rarity}">${def.icon}</span>`
+        : `<span class="trick">${def.icon}</span>`;
+      const kind = o.kind === 'talisman' ? `Талисман · ${RARITY[def.rarity].name}` : 'Фокус · одноразовый';
+      const why = o.sold ? '' : full ? (o.kind === 'talisman' ? 'Нет места — продай талисман' : 'Нет места для фокусов') : run.coins < price ? 'Не хватает монет' : '';
+      return `
+        <div class="offer${o.sold ? ' sold' : ''}">
+          ${o.sold ? '<span class="stamp">Куплено</span>' : ''}
+          <div class="ico">${icon}<div><h3>${esc(def.name)}</h3><div class="kind${o.kind === 'talisman' ? ` q${def.rarity}` : ''}">${kind}</div></div></div>
+          <p>${esc(def.desc)}</p>
+          <div class="buy-row">
+            <span class="price-tag">${price}${COIN}</span>
+            ${o.sold ? '' : `<button class="btn small" data-buy="${i}" ${can ? '' : 'disabled'} title="${esc(why)}">Купить</button>`}
+          </div>
+          ${why ? `<div class="muted">${esc(why)}</div>` : ''}
+        </div>`;
+    }).join('');
+    const owned = run.talismans.length
+      ? run.talismans.map((id) => {
+        const t = talismanById(id);
+        return `<div class="owned-item"><span class="token q${t.rarity}" style="cursor:default">${t.icon}</span><span>${esc(t.name)}</span><button class="btn small ghost" data-sell="${id}">Продать за ${sellPrice(id)}${COIN}</button></div>`;
+      }).join('')
+      : '<div class="muted">Пока пусто. Талисманы работают всю игру — начни с них.</div>';
+    $('#screen-shop').innerHTML = `
+      <div class="wrap">
+        <div class="shop-head">
+          <div>
+            <div class="eyebrow">Между столами</div>
+            <h2>Барахолка</h2>
+            <div class="act-sub">у метро, по выходным. Торг неуместен.</div>
+          </div>
+          <div class="muted">Следующий стол: <b style="color:var(--cream)">${next.opp.icon} ${esc(next.opp.name)}</b>${next.opp.boss ? ' · босс' : ''}</div>
+        </div>
+        <div class="offers">${offerHTML}</div>
+        <div class="owned">
+          <div class="section-label">Твои талисманы · ${run.talismans.length}/${run.talismanSlots}</div>
+          <div class="owned-list">${owned}</div>
+        </div>
+        <div class="shop-actions">
+          <button class="btn ghost" data-a="reroll" ${run.coins >= rerollCost ? '' : 'disabled'}>Перемешать товар — ${rerollCost}${COIN}</button>
+          <button class="btn big" data-a="leave">К следующему столу</button>
+        </div>
+      </div>`;
+    $('#screen-shop').onclick = (e) => {
+      const b = e.target.closest('[data-buy], [data-sell], [data-a]');
+      if (!b || b.disabled) return;
+      Sfx.unlock();
+      if (b.dataset.buy != null) this.buy(Number(b.dataset.buy));
+      else if (b.dataset.sell) this.sell(b.dataset.sell);
+      else if (b.dataset.a === 'reroll') this.reroll();
+      else if (b.dataset.a === 'leave') this.leaveShop();
+    };
+  },
+
+  buy(i) {
+    const run = this.run;
+    const o = run.shop.offers[i];
+    if (!o || o.sold) return;
+    const price = priceOf(o);
+    if (run.coins < price) return;
+    if (o.kind === 'talisman') {
+      if (run.talismans.length >= run.talismanSlots) return;
+      run.talismans.push(o.id);
+    } else {
+      if (run.tricks.length >= run.trickSlots) return;
+      run.tricks.push(o.id);
+    }
+    run.coins -= price;
+    o.sold = true;
+    Sfx.play('buy');
+    Store.save();
+    this.renderShop();
+    HUD.render();
+    Fx.wiggle(o.kind === 'talisman' ? HUD.token(o.id) : $('#topbar .trick:last-of-type'));
+  },
+
+  sell(id) {
+    const run = this.run;
+    const i = run.talismans.indexOf(id);
+    if (i < 0 || this.screen !== 'shop') return;
+    run.talismans.splice(i, 1);
+    run.coins += sellPrice(id);
+    Sfx.play('coin');
+    Store.save();
+    this.renderShop();
+    HUD.render();
+  },
+
+  reroll() {
+    const run = this.run;
+    const cost = 2 + run.shop.rerolls;
+    if (run.coins < cost) return;
+    run.coins -= cost;
+    run.shop.rerolls++;
+    run.shop.offers = rollShop(run);
+    Sfx.play('card');
+    Store.save();
+    this.renderShop();
+    HUD.render();
+  },
+
+  leaveShop() {
+    Sfx.play('click');
+    this.run.shop = null;
+    this.run.phase = 'intro';
+    Store.save();
+    this.renderIntro();
+    this.show('intro');
+  },
+
+  // ----- фокусы -----
+  useTrick(index) {
+    const run = this.run;
+    const t = trickById(run.tricks[index]);
+    if (!t) return;
+    if (t.anytime) {
+      if (this.screen === 'game' && this.match) { this.match.useTrick(index); Play.step(); }
+      else {
+        if (!t.can(null, run)) return;
+        run.tricks.splice(index, 1);
+        run.hearts = Math.min(run.maxHearts, run.hearts + 1);
+        Store.save();
+        HUD.render();
+        Fx.floatAt($('#topbar .hearts'), '+1 ♥', 'note');
+      }
+      Sfx.play('magic');
+      return;
+    }
+    if (this.screen !== 'game' || !this.match) return;
+    if (t.target === 'card') {
+      UI.pendingDefend = null;
+      Board.hideChoice();
+      UI.targeting = { index, id: t.id };
+      Play.step();
+      return;
+    }
+    if (this.match.useTrick(index)) { Sfx.play('magic'); Play.step(); }
+  },
+
+  // ----- конец забега -----
+  endRun(victory) {
+    const d = Store.data;
+    const run = this.run;
+    const meta = d.meta;
+    const before = BACKS.filter((b) => b.unlock && b.unlock.check(meta)).map((b) => b.id);
+    if (victory) { meta.runsWon++; meta.bestAct = Math.max(meta.bestAct, ACTS.length); }
+    const after = BACKS.filter((b) => b.unlock && b.unlock.check(meta));
+    meta.seen = meta.seen || [];
+    const newly = after.filter((b) => !meta.seen.includes(b.id));
+    for (const b of newly) meta.seen.push(b.id);
+    void before;
+    d.run = null;
+    Store.save();
+    const info = tableInfo(Math.min(run.table, TOTAL_TABLES - 1));
+    const talis = run.talismans.map((id) => talismanById(id)).map((t) => `${t.icon} ${esc(t.name)}`).join(', ') || 'ни одного';
+    $('#screen-end').innerHTML = `
+      <div class="end-wrap">
+        <div class="eyebrow">${victory ? 'Хозяин признал поражение' : `Дошёл до акта ${ROMAN[info.act]}: ${esc(info.actInfo.name)}`}</div>
+        <h1 class="act-title">${victory ? 'Забег пройден!' : 'Забег окончен'}</h1>
+        <div class="sheet" style="text-align:left">
+          <div class="tally">
+            <div class="tally-row"><span>Выиграно партий</span><span class="v">${run.stats.won}</span></div>
+            <div class="tally-row"><span>Проиграно</span><span class="v">${run.stats.lost}</span></div>
+            <div class="tally-row"><span>Ничьих</span><span class="v">${run.stats.draws}</span></div>
+            <div class="tally-row"><span>Заработано монет</span><span class="v">${run.stats.coins}${COIN}</span></div>
+          </div>
+          <div class="sub" style="margin-top:10px">Талисманы: ${talis}</div>
+        </div>
+        ${newly.map((b) => `<div class="unlock">Открыта рубашка «${esc(b.name)}»: ${esc(b.desc)}</div>`).join('')}
+        <button class="btn big" data-a="menu">В меню</button>
+      </div>`;
+    $('#screen-end').onclick = (e) => {
+      if (!e.target.closest('[data-a="menu"]')) return;
+      Sfx.play('click');
+      this.run = null;
+      this.match = null;
+      this.renderMenu();
+      this.show('menu');
+    };
+    this.run = null;
+    this.show('end');
+    if (victory) Sfx.play('win');
+  },
+
+  // ----- окна -----
+  modalClosable: true,
+  modal(html, closable = true) {
+    const m = $('#modal');
+    m.innerHTML = html;
+    m.hidden = false;
+    this.modalClosable = closable;
+    m.onclick = closable ? (e) => { if (e.target === m) this.closeModal(); } : null;
+  },
+  closeModal() {
+    const m = $('#modal');
+    m.hidden = true;
+    m.innerHTML = '';
+    m.onclick = null;
+  },
+
+  confirm(title, text, okLabel, onOk) {
+    this.modal(`
+      <div class="panel" style="width:min(400px,100%)">
+        <h2>${esc(title)}</h2>
+        <p>${esc(text)}</p>
+        <div class="row"><button class="btn" data-a="ok">${esc(okLabel)}</button><button class="btn ghost" data-a="cancel">Отмена</button></div>
+      </div>`);
+    $('#modal .panel').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-a]');
+      if (!b) return;
+      Sfx.play('click');
+      this.closeModal();
+      if (b.dataset.a === 'ok') onOk();
+    });
+  },
+
+  pause() {
+    const s = Store.data.settings;
+    const inGame = this.screen === 'game';
+    this.modal(`
+      <div class="panel" style="width:min(380px,100%)">
+        <h2>Пауза</h2>
+        <div class="stack-btns">
+          <button class="btn" data-a="back">Вернуться</button>
+          <button class="btn ghost" data-a="rules">Как играть</button>
+          <button class="btn ghost" data-a="sound">${s.sound ? '🔊 Звук: вкл' : '🔇 Звук: выкл'}</button>
+          <button class="btn ghost" data-a="fast">${s.fast ? '⏩ Соперник ходит быстро' : '▶ Соперник ходит не спеша'}</button>
+          <button class="btn ghost" data-a="menu">Выйти в меню</button>
+        </div>
+        ${inGame ? '<p class="muted" style="margin-top:14px">Забег сохраняется. Начатая партия при выходе не засчитывается — стол начнётся заново.</p>' : '<p class="muted" style="margin-top:14px">Забег сохраняется автоматически.</p>'}
+      </div>`);
+    $('#modal .panel').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-a]');
+      if (!b) return;
+      Sfx.play('click');
+      const a = b.dataset.a;
+      if (a === 'back') this.closeModal();
+      if (a === 'rules') this.rules();
+      if (a === 'sound') { s.sound = !s.sound; Store.save(); this.pause(); }
+      if (a === 'fast') { s.fast = !s.fast; Store.save(); this.pause(); }
+      if (a === 'menu') {
+        this.closeModal();
+        Play.stop();
+        this.match = null;
+        this.renderMenu();
+        this.show('menu');
+      }
+    });
+  },
+
+  rules() {
+    this.modal(`
+      <div class="panel">
+        <h2>Как играть</h2>
+        <h3>Подкидной дурак</h3>
+        <ul>
+          <li>Колода — 36 карт, от шестёрки до туза (Т). Козырь — масть открытой карты под колодой. У каждого по 6 карт.</li>
+          <li>Атакующий ходит любой картой. Отбиться можно старшей картой той же масти или козырем.</li>
+          <li>Когда всё отбито, атакующий может подкинуть карту того же достоинства, что уже лежит на столе. В отбое не больше 6 карт (в первом — 5) и не больше, чем у отбивающегося на руках.</li>
+          <li>Отбился — «Бито»: карты уходят, ход переходит к тебе. Нечем бить — «Беру»: забираешь всё со стола, а соперник ещё подкинет вдогонку.</li>
+          <li>После каждого отбоя все добирают до шести, первым — тот, кто ходил.</li>
+          <li>Колода кончилась — кто первым избавился от карт, тот выиграл. Последний с картами — дурак.</li>
+        </ul>
+        <h3>Забег</h3>
+        <ul>
+          <li>Три акта по три соперника. Третий в акте — босс: у каждого босса своё правило, а за победу над ним — сердце.</li>
+          <li>Победа приносит монеты. Проиграл — теряешь сердце и переигрываешь стол. Ничья — переигровка без потерь. Сердца кончились — забег окончен.</li>
+          <li>Между столами — барахолка. <b>Талисманы</b> действуют всегда, <b>фокусы</b> — разовые хитрости, их применяют в свой ход.</li>
+          <li>Новые рубашки колоды открываются за успехи и меняют начало забега.</li>
+        </ul>
+        <h3>Управление</h3>
+        <ul>
+          <li>Нажми на карту в руке, чтобы сыграть ею. Карты, которыми сейчас можно ходить, подсвечены; козыри — с золотой каймой.</li>
+          <li>Пробел или кнопка над рукой — «Бито», «Беру» или «Забирай». Нажми на талисман или фокус наверху, чтобы прочитать и применить.</li>
+        </ul>
+        <div class="row"><button class="btn" data-a="close">Понятно</button></div>
+      </div>`);
+    $('#modal .panel').addEventListener('click', (e) => {
+      if (e.target.closest('[data-a="close"]')) { Sfx.play('click'); this.closeModal(); }
+    });
+  },
+};
+
+function boot(hotData) {
+  App.init(hotData || {});
+}
+if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(boot);
+else boot((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
+</body>
+</html>
